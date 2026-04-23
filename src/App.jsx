@@ -11,11 +11,13 @@ function App() {
 
   return (
     <div className="w-full h-screen bg-amber-600">
+      <Toaster />
       <Routes>
         <Route path='/' element={<HomePage/>} />
         <Route path='/login' element={<LoginPage/>} />
         <Route path='/register' element={<RegisterPage/>} />
         <Route path='/admin/*' element={<AdminPage/>} />
+        <Route path='/test' element={<TestPage/>} />
       </Routes>
     </div>
   )
