@@ -1,22 +1,33 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'react-hot-toast';
+import { toast , useNavigate} from 'react-hot-toast';
+import api from '../utils/api';
 
 export default function LoginPage() {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
+  const navigate = useNavigate()
 
   async function handleLogin() {
+    setLoading(true)
     try {
-      await axios.post('http://localhost:3000/users/login', {
-        email: email,
-        password: password
-      })
-      toast.success('Login successful')
+    const res = await api.post('/users/login', {
+      email : email,
+      password : password
+    })
+      localStorage.setItem('token', res.data.token)
+if(res.data.isAdmin) {
+  navigate('/admin')
+} else {
+  navigate('/')
+}
+
     } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong")
+      toast.error(error?.response?.data?.message || "Something went wrong")
     }
+    setLoading(false)
 
   }
 
@@ -40,8 +51,11 @@ export default function LoginPage() {
             value={password}
           />
         </div>
-        <button onClick={handleLogin} className="w-full py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors shadow-lg">
+        <button  disabled={loading} onClick={handleLogin} className="w-full py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors shadow-lg">
           Login
+          {
+            loading ? "Loding..." : "Login"
+          }
         </button>
         <p className="text-white/80 text-center">
           Don't have an account? <Link to="/register" className="text-white font-bold hover:underline">Register</Link>
