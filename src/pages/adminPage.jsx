@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import { MdDashboard, MdShoppingBasket, MdPeople, MdLogout, MdInventory } from 'react-icons/md';
 import AdminProductsPage from './admin/adminProductsPage';
+import AdminAddProductForm from './admin/adminAddProductForm';
 
 export default function AdminPage() {
     const location = useLocation();
@@ -119,6 +120,7 @@ export default function AdminPage() {
                                     element={item.element} 
                                 />
                             ))}
+                            <Route path="/products/add" element={<AdminAddProductForm />} />
                         </Routes>
                     </div>
                 </main>

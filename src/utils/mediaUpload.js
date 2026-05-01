@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js/dist/index.cjs";
+import { createClient } from "@supabase/supabase-js";
 
 const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4eGZ2bWVtcmFjcWVmaWJhcm5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2NDk2NTAsImV4cCI6MjA5MzIyNTY1MH0.fkcu0XVcG_geo9OABJ5Bs0olrnBrA46DhTFx0ZwrGlA"
 const url = "https://yxxfvmemracqefibarni.supabase.co"
