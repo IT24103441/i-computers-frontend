@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { toast , useNavigate} from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import api from '../utils/api';
 
 export default function LoginPage() {
@@ -51,10 +50,9 @@ if(res.data.isAdmin) {
             value={password}
           />
         </div>
-        <button  disabled={loading} onClick={handleLogin} className="w-full py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors shadow-lg">
-          Login
+        <button  disabled={loading} onClick={handleLogin} className="w-full py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors shadow-lg flex items-center justify-center">
           {
-            loading ? "Loding..." : "Login"
+            loading ? "Loading..." : "Login"
           }
         </button>
         <p className="text-white/80 text-center">
