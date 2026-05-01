@@ -1,11 +1,12 @@
 
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import ProductCard from './components/productCard'
-import HomePage from './pages/HomePage'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
+import HomePage from './pages/homePage'
+import LoginPage from './pages/loginPage'
+import RegisterPage from './pages/registerPage'
 import AdminPage from './pages/adminPage'
+import TestPage from './pages/test'
+import { Toaster } from 'react-hot-toast'
 function App() {
 
 
