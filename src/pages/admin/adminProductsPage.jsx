@@ -1,11 +1,167 @@
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { FaPlus, FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import api from "../../utils/api";
+
+const sampleProducts = [
+	{
+		productId: "PRD001",
+		name: "NVIDIA GeForce RTX 4060 8GB",
+		altNames: ["RTX 4060", "GeForce RTX 4060", "4060 8GB"],
+		price: 145000,
+		labelledPrice: 155000,
+		description: "Mid-range graphics card suitable for 1080p and 1440p gaming.",
+		images: ["/images/products/rtx4060-front.png"],
+		brand: "NVIDIA",
+		model: "GeForce RTX 4060 8GB",
+		category: "Graphics Card",
+		isAvailable: true,
+		stock: 12,
+	},
+	{
+		productId: "PRD002",
+		name: "AMD Ryzen 5 7600 Processor",
+		altNames: ["Ryzen 5 7600", "AMD 7600", "R5 7600"],
+		price: 72000,
+		labelledPrice: 79000,
+		description: "6-core 12-thread desktop processor.",
+		images: ["/images/products/ryzen5-7600-1.png"],
+		brand: "AMD",
+		model: "Ryzen 5 7600",
+		category: "Processor",
+		isAvailable: true,
+		stock: 20,
+	}
+];
 
 export default function AdminProductsPage() {
-    return (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500" >
-            Admin Products Page
+	const [products, setProducts] = useState(sampleProducts);
+	const [isLoading, setIsLoading] = useState(false);
+	const [searchQuery, setSearchQuery] = useState("");
 
-            <Link to="/admin/products/add" className="flex items-center gap-2 p-4 rounded-xl transition-all duration-200 bg-amber-600 text-white shadow-lg shadow-amber-200 fixed bottom-4 right-4">Add Product</Link>
-        </div>
+	// In a real app, we would fetch from API
+	// useEffect(() => {
+	//     fetchProducts();
+	// }, []);
+
+	// const fetchProducts = async () => {
+	//     try {
+	//         setIsLoading(true);
+	//         const res = await api.get("/products");
+	//         setProducts(res.data);
+	//     } catch (err) {
+	//         toast.error("Failed to load products");
+	//     } finally {
+	//         setIsLoading(false);
+	//     }
+	// };
+
+    const filteredProducts = products.filter(p => 
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        p.productId.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+	return (
+		<div className="w-full flex flex-col gap-6 animate-in fade-in duration-500">
+            {/* Header Actions */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="relative flex-1 max-w-md">
+                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input 
+                        type="text" 
+                        placeholder="Search products..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all shadow-sm"
+                    />
+                </div>
+                
+                <Link
+                    to="/admin/products/add"
+                    className="bg-amber-600 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-200 hover:bg-amber-700 transition-all hover:-translate-y-0.5 active:translate-y-0"
+                >
+                    <FaPlus />
+                    <span>Add Product</span>
+                </Link>
+            </div>
+
+            {/* Products Table */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-gray-50/50 border-b border-gray-100">
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Product</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Category</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Price</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Stock</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            {filteredProducts.map((product) => (
+                                <tr key={product.productId} className="hover:bg-gray-50/50 transition-colors group">
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-lg bg-gray-100 flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-100">
+                                                {product.images?.[0] ? (
+                                                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <span className="text-gray-400 text-xs">No img</span>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <div className="font-bold text-gray-900 group-hover:text-amber-600 transition-colors">{product.name}</div>
+                                                <div className="text-xs text-gray-500">{product.productId}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className="px-3 py-1 bg-amber-50 text-amber-700 rounded-full text-xs font-medium">
+                                            {product.category}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="font-bold text-gray-900">LKR {product.price.toLocaleString()}</div>
+                                        {product.labelledPrice > product.price && (
+                                            <div className="text-xs text-gray-400 line-through">LKR {product.labelledPrice.toLocaleString()}</div>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-gray-600">
+                                        {product.stock} units
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                            product.isAvailable 
+                                            ? 'bg-green-100 text-green-800' 
+                                            : 'bg-red-100 text-red-800'
+                                        }`}>
+                                            {product.isAvailable ? 'Available' : 'Out of Stock'}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <button className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all" title="Edit">
+                                                <FaEdit size={18} />
+                                            </button>
+                                            <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Delete">
+                                                <FaTrash size={18} />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                {filteredProducts.length === 0 && (
+                    <div className="p-12 text-center text-gray-500">
+                        No products found matching your search.
+                    </div>
+                )}
+            </div>
+		</div>
+	);
 }
