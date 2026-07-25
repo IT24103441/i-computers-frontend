@@ -64,6 +64,7 @@ export default function AdminProductsPage() {
 
     return (
         <div className="w-full flex flex-col gap-6 animate-in fade-in duration-500">
+            {loading && <LoadingScreen />}
             {/* Header Actions */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="relative flex-1 max-w-md">
@@ -155,6 +156,7 @@ export default function AdminProductsPage() {
                                                         }
                                                             .then(() => {
                                                                 toast.success("Product deleted successfully");
+                                                                setloading(!loading);
                                                             })
                                                             .catch((error) => {
                                                                 toast.error(error?.response?.data?.message || "Failed to delete product");
