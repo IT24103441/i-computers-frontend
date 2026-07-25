@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 import { FaPlus, FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import api from "../../utils/api";
+import LoadingScreen from "../../components/loadingScreen";
+import ProductDeleteButton from "../../components/productDeleteButton";
 
 const sampleProducts = [
     {
@@ -64,7 +66,7 @@ export default function AdminProductsPage() {
 
     return (
         <div className="w-full flex flex-col gap-6 animate-in fade-in duration-500">
-            {loading && <LoadingScreen />}
+            {isLoading && <LoadingScreen />}
             {/* Header Actions */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="relative flex-1 max-w-md">
@@ -146,25 +148,9 @@ export default function AdminProductsPage() {
                                             <button className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all" title="Edit">
                                                 <FaEdit size={18} />
                                             </button>
-                                            <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Delete">
-                                                <FaTrash onClick={() => {
-                                                    toast.success(product.productId);
-                                                    const token = localStorage.getItem("token");
-                                                    api.delete(`products/${product.productId}`, {
-                                                        headers: {
-                                                            Authorization: `Bearer ${token}`
-                                                        }
-                                                            .then(() => {
-                                                                toast.success("Product deleted successfully");
-                                                                setloading(!loading);
-                                                            })
-                                                            .catch((error) => {
-                                                                toast.error(error?.response?.data?.message || "Failed to delete product");
-                                                            })
-                                                    }
-                                                    )
-                                                }} size={18} />
-                                            </button>
+                                            <div className="w-full flex justify-center items-center gap-4">
+                                                <ProductDeleteButton productId={product.productId} refresh={() => setLoading(true)} />
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
