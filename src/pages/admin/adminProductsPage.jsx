@@ -5,78 +5,78 @@ import { Link } from "react-router-dom";
 import api from "../../utils/api";
 
 const sampleProducts = [
-	{
-		productId: "PRD001",
-		name: "NVIDIA GeForce RTX 4060 8GB",
-		altNames: ["RTX 4060", "GeForce RTX 4060", "4060 8GB"],
-		price: 145000,
-		labelledPrice: 155000,
-		description: "Mid-range graphics card suitable for 1080p and 1440p gaming.",
-		images: ["/images/products/rtx4060-front.png"],
-		brand: "NVIDIA",
-		model: "GeForce RTX 4060 8GB",
-		category: "Graphics Card",
-		isAvailable: true,
-		stock: 12,
-	},
-	{
-		productId: "PRD002",
-		name: "AMD Ryzen 5 7600 Processor",
-		altNames: ["Ryzen 5 7600", "AMD 7600", "R5 7600"],
-		price: 72000,
-		labelledPrice: 79000,
-		description: "6-core 12-thread desktop processor.",
-		images: ["/images/products/ryzen5-7600-1.png"],
-		brand: "AMD",
-		model: "Ryzen 5 7600",
-		category: "Processor",
-		isAvailable: true,
-		stock: 20,
-	}
+    {
+        productId: "PRD001",
+        name: "NVIDIA GeForce RTX 4060 8GB",
+        altNames: ["RTX 4060", "GeForce RTX 4060", "4060 8GB"],
+        price: 145000,
+        labelledPrice: 155000,
+        description: "Mid-range graphics card suitable for 1080p and 1440p gaming.",
+        images: ["/images/products/rtx4060-front.png"],
+        brand: "NVIDIA",
+        model: "GeForce RTX 4060 8GB",
+        category: "Graphics Card",
+        isAvailable: true,
+        stock: 12,
+    },
+    {
+        productId: "PRD002",
+        name: "AMD Ryzen 5 7600 Processor",
+        altNames: ["Ryzen 5 7600", "AMD 7600", "R5 7600"],
+        price: 72000,
+        labelledPrice: 79000,
+        description: "6-core 12-thread desktop processor.",
+        images: ["/images/products/ryzen5-7600-1.png"],
+        brand: "AMD",
+        model: "Ryzen 5 7600",
+        category: "Processor",
+        isAvailable: true,
+        stock: 20,
+    }
 ];
 
 export default function AdminProductsPage() {
-	const [products, setProducts] = useState(sampleProducts);
-	const [isLoading, setIsLoading] = useState(false);
-	const [searchQuery, setSearchQuery] = useState("");
+    const [products, setProducts] = useState(sampleProducts);
+    const [isLoading, setIsLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
-	// In a real app, we would fetch from API
-	// useEffect(() => {
-	//     fetchProducts();
-	// }, []);
+    // In a real app, we would fetch from API
+    // useEffect(() => {
+    //     fetchProducts();
+    // }, []);
 
-	// const fetchProducts = async () => {
-	//     try {
-	//         setIsLoading(true);
-	//         const res = await api.get("/products");
-	//         setProducts(res.data);
-	//     } catch (err) {
-	//         toast.error("Failed to load products");
-	//     } finally {
-	//         setIsLoading(false);
-	//     }
-	// };
+    // const fetchProducts = async () => {
+    //     try {
+    //         setIsLoading(true);
+    //         const res = await api.get("/products");
+    //         setProducts(res.data);
+    //     } catch (err) {
+    //         toast.error("Failed to load products");
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
 
-    const filteredProducts = products.filter(p => 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const filteredProducts = products.filter(p =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.productId.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-	return (
-		<div className="w-full flex flex-col gap-6 animate-in fade-in duration-500">
+    return (
+        <div className="w-full flex flex-col gap-6 animate-in fade-in duration-500">
             {/* Header Actions */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="relative flex-1 max-w-md">
                     <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input 
-                        type="text" 
-                        placeholder="Search products..." 
+                    <input
+                        type="text"
+                        placeholder="Search products..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all shadow-sm"
                     />
                 </div>
-                
+
                 <Link
                     to="/admin/products/add"
                     className="bg-amber-600 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-200 hover:bg-amber-700 transition-all hover:-translate-y-0.5 active:translate-y-0"
@@ -133,11 +133,10 @@ export default function AdminProductsPage() {
                                         {product.stock} units
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                            product.isAvailable 
-                                            ? 'bg-green-100 text-green-800' 
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${product.isAvailable
+                                            ? 'bg-green-100 text-green-800'
                                             : 'bg-red-100 text-red-800'
-                                        }`}>
+                                            }`}>
                                             {product.isAvailable ? 'Available' : 'Out of Stock'}
                                         </span>
                                     </td>
@@ -147,7 +146,22 @@ export default function AdminProductsPage() {
                                                 <FaEdit size={18} />
                                             </button>
                                             <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Delete">
-                                                <FaTrash size={18} />
+                                                <FaTrash onClick={() => {
+                                                    toast.success(product.productId);
+                                                    const token = localStorage.getItem("token");
+                                                    api.delete(`products/${product.productId}`, {
+                                                        headers: {
+                                                            Authorization: `Bearer ${token}`
+                                                        }
+                                                            .then(() => {
+                                                                toast.success("Product deleted successfully");
+                                                            })
+                                                            .catch((error) => {
+                                                                toast.error(error?.response?.data?.message || "Failed to delete product");
+                                                            })
+                                                    }
+                                                    )
+                                                }} size={18} />
                                             </button>
                                         </div>
                                     </td>
@@ -162,6 +176,6 @@ export default function AdminProductsPage() {
                     </div>
                 )}
             </div>
-		</div>
-	);
+        </div>
+    );
 }
