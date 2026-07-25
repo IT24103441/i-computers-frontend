@@ -38,26 +38,28 @@ const sampleProducts = [
 ];
 
 export default function AdminProductsPage() {
-    const [products, setProducts] = useState(sampleProducts);
+    const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
-    // In a real app, we would fetch from API
-    // useEffect(() => {
-    //     fetchProducts();
-    // }, []);
+    useEffect(() => {
+        fetchProducts();
+    }, []);
 
-    // const fetchProducts = async () => {
-    //     try {
-    //         setIsLoading(true);
-    //         const res = await api.get("/products");
-    //         setProducts(res.data);
-    //     } catch (err) {
-    //         toast.error("Failed to load products");
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // };
+    const fetchProducts = async () => {
+        try {
+            setIsLoading(true);
+            const token = localStorage.getItem("token");
+            const res = await api.get("/products", {
+                headers: token ? { Authorization: `Bearer ${token}` } : {}
+            });
+            setProducts(res.data);
+        } catch (err) {
+            toast.error("Failed to load products");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const filteredProducts = products.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -149,7 +151,7 @@ export default function AdminProductsPage() {
                                                 <FaEdit size={18} />
                                             </button>
                                             <div className="w-full flex justify-center items-center gap-4">
-                                                <ProductDeleteButton productId={product.productId} refresh={() => setLoading(true)} />
+                                                <ProductDeleteButton productId={product.productId} refresh={fetchProducts} />
                                             </div>
                                         </div>
                                     </td>
