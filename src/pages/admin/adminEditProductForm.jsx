@@ -1,98 +1,141 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import uploadMedia from "../../utils/mediaUpload";
 import toast from "react-hot-toast";
 import api from "../../utils/api";
-import { useLocation } from "react-router-dom";
+
 export default function AdminEditProductForm() {
-
-
     const location = useLocation();
-    const [productId, setProductId] = useState(location.state.productId);
-    const [name, setName] = useState(location.state.name);
-    const [altNames, setAltNames] = useState(location.state.altNames.join(","));
-    const [description, setDescription] = useState(location.state.description);
-    const [price, setPrice] = useState(location.state.price);
-    const [labelledPrice, setLabelledPrice] = useState(location.state.labelledPrice);
-    const [images, setImages] = useState(location.state.images);
-    const [isAvailable, setIsAvailable] = useState(location.state.isAvailable);
-    const [category, setCategory] = useState(location.state.category);
-    const [stock, setStock] = useState(location.state.stock);
-    const [brand, setBrand] = useState(location.state.brand);
-    const [model, setModel] = useState(location.state.model);
-    const [isLoading, setIsLoading] = useState(false);
+    const params = useParams();
     const navigate = useNavigate();
 
-    async function editProduct() {
+    const productData = location.state || {};
 
+    const [productId, setProductId] = useState(productData.productId || params.productId || "");
+    const [name, setName] = useState(productData.name || "");
+    const [altNames, setAltNames] = useState(
+        Array.isArray(productData.altNames) ? productData.altNames.join(",") : (productData.altNames || "")
+    );
+    const [description, setDescription] = useState(productData.description || "");
+    const [price, setPrice] = useState(productData.price ?? "");
+    const [labelledPrice, setLabelledPrice] = useState(productData.labelledPrice ?? "");
+    const [images, setImages] = useState(productData.images || []);
+    const [isAvailable, setIsAvailable] = useState(productData.isAvailable ?? true);
+    const [category, setCategory] = useState(productData.category || "");
+    const [stock, setStock] = useState(productData.stock ?? 0);
+    const [brand, setBrand] = useState(productData.brand || "");
+    const [model, setModel] = useState(productData.model || "");
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const targetId = params.productId || productId;
+        if (!location.state && targetId) {
+            setIsLoading(true);
+            api.get("/products/" + targetId)
+                .then((res) => {
+                    const prod = res.data;
+                    if (prod) {
+                        setProductId(prod.productId || targetId);
+                        setName(prod.name || "");
+                        setAltNames(Array.isArray(prod.altNames) ? prod.altNames.join(",") : (prod.altNames || ""));
+                        setDescription(prod.description || "");
+                        setPrice(prod.price ?? "");
+                        setLabelledPrice(prod.labelledPrice ?? "");
+                        setImages(prod.images || []);
+                        setIsAvailable(prod.isAvailable ?? true);
+                        setCategory(prod.category || "");
+                        setStock(prod.stock ?? 0);
+                        setBrand(prod.brand || "");
+                        setModel(prod.model || "");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Failed to fetch product details:", error);
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        }
+    }, [location.state, params.productId]);
+
+    async function editProduct() {
         setIsLoading(true);
 
         const token = localStorage.getItem("token");
 
-        if (token == null) {
-            toast.error("You must be logged in to add a product");
-            navigate("/signin");
+        if (!token) {
+            toast.error("You must be logged in to edit a product");
+            navigate("/login");
             return;
         }
 
-        const imageUploadPromises = []
-
-        for (let i = 0; i < images.length; i++) {
-
-            imageUploadPromises.push(uploadMedia(images[i]))
-
-        }
-        //imageUploadPromises -> [Promise1, Promise2, Promise3]
         try {
+            let imageUrls = [];
 
-            const imageUrls = await Promise.all(imageUploadPromises);
+            if (images && images.length > 0) {
+                if (images[0] instanceof File) {
+                    const imageUploadPromises = [];
+                    for (let i = 0; i < images.length; i++) {
+                        imageUploadPromises.push(uploadMedia(images[i]));
+                    }
+                    imageUrls = await Promise.all(imageUploadPromises);
+                } else {
+                    imageUrls = Array.isArray(images) ? images : Array.from(images);
+                }
+            }
 
-            const altNamesArray = altNames.split(",")
+            if ((!imageUrls || imageUrls.length === 0) && productData.images) {
+                imageUrls = productData.images;
+            }
 
-            console.log(altNamesArray)
-
+            const altNamesArray = typeof altNames === "string"
+                ? altNames.split(",").map(s => s.trim()).filter(Boolean)
+                : (Array.isArray(altNames) ? altNames : []);
 
             const requestBody = {
-                productId: productId,
                 name: name,
                 altNames: altNamesArray,
                 description: description,
-                price: price,
-                labelledPrice: labelledPrice,
+                price: Number(price) || 0,
+                labelledPrice: Number(labelledPrice) || 0,
                 images: imageUrls,
-                isAvailable: isAvailable,
+                isAvailable: Boolean(isAvailable),
                 category: category,
-                stock: stock,
+                stock: Number(stock) || 0,
                 brand: brand,
                 model: model
+            };
+
+            const config = {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            };
+
+            try {
+                await api.put("/products/" + productId, requestBody, config);
+            } catch (putErr) {
+                if (putErr?.response?.status === 404 || putErr?.response?.status === 405) {
+                    await api.put("/products", { productId, ...requestBody }, config);
+                } else {
+                    throw putErr;
+                }
             }
 
-            //backend
-            await api.post("/products", requestBody,
-                {
-                    headers: {
-                        Authorization: "Bearer " + token
-                    }
-                }
-            )
-
-            toast.success("Product added successfully");
+            toast.success("Product updated successfully");
             navigate("/admin/products");
-
-            setIsLoading(false);
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Failed to add product");
+            console.error("Edit product error:", error);
+            toast.error(error?.response?.data?.message || "Failed to update product");
+        } finally {
             setIsLoading(false);
         }
-
     }
-
-
 
     return (
         <div className="w-full h-full flex items-center flex-col">
             <div className="w-full h-[100px] bg-white shadow-md rounded-xl flex p-6 items-center justify-between mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Add New Product</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Edit Product</h1>
                 <div className="flex items-center gap-4">
                     <Link to="/admin/products" className="px-6 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors font-medium">
                         Cancel
@@ -101,7 +144,7 @@ export default function AdminEditProductForm() {
                     <button
                         disabled={isLoading}
                         className={`px-6 py-2.5 rounded-lg bg-amber-600 text-white font-medium shadow-lg shadow-amber-200 hover:bg-amber-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
-                        onClick={addProduct}
+                        onClick={editProduct}
                     >
                         {isLoading ? "Saving..." : "Save Product"}
                     </button>
@@ -111,7 +154,7 @@ export default function AdminEditProductForm() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-semibold text-gray-700">Product ID</label>
-                        <input value={productId} onChange={(e) => setProductId(e.target.value)} className="w-full h-11 border border-gray-200 rounded-lg px-4 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all" placeholder="PD-001" />
+                        <input disabled value={productId} onChange={(e) => setProductId(e.target.value)} className="w-full h-11 border border-gray-200 bg-gray-100 rounded-lg px-4 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all cursor-not-allowed" placeholder="PD-001" />
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -206,5 +249,5 @@ export default function AdminEditProductForm() {
                 </div>
             </div>
         </div>
-    )
+    );
 }

@@ -151,7 +151,7 @@ export default function AdminProductsPage() {
                                                 className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
                                                 title="Edit"
                                                 to={`/admin/products/edit/${product.productId}`}
-                                                state={{ products }}
+                                                state={product}
                                             >
                                                 <FaEdit size={18} />
                                             </Link>

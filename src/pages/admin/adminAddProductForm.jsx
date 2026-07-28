@@ -28,7 +28,7 @@ export default function AdminAddProductForm() {
 
         if (token == null) {
             toast.error("You must be logged in to add a product");
-            navigate("/signin");
+            navigate("/login");
             return;
         }
 
