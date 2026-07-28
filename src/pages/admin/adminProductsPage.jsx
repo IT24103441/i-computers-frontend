@@ -137,14 +137,19 @@ export default function AdminProductsPage() {
                                     <td className="px-6 py-4 text-sm text-gray-600">
                                         {product.stock} units
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${product.isAvailable
-                                            ? 'bg-green-100 text-green-800'
-                                            : 'bg-red-100 text-red-800'
-                                            }`}>
-                                            {product.isAvailable ? 'Available' : 'Out of Stock'}
-                                        </span>
-                                    </td>
+                                     <td className="px-6 py-4">
+                                         {(() => {
+                                             const avail = product.isAvailable === true || product.isAvailable === "true";
+                                             return (
+                                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${avail
+                                                     ? 'bg-green-100 text-green-800'
+                                                     : 'bg-red-100 text-red-800'
+                                                     }`}>
+                                                     {avail ? 'Available' : 'Out of Stock'}
+                                                 </span>
+                                             );
+                                         })()}
+                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex justify-end gap-2">
                                             <Link
