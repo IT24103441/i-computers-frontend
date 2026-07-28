@@ -147,9 +147,14 @@ export default function AdminProductsPage() {
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex justify-end gap-2">
-                                            <button className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all" title="Edit">
+                                            <Link
+                                                className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
+                                                title="Edit"
+                                                to={`/admin/products/edit/${product.productId}`}
+                                                state={{ products }}
+                                            >
                                                 <FaEdit size={18} />
-                                            </button>
+                                            </Link>
                                             <div className="w-full flex justify-center items-center gap-4">
                                                 <ProductDeleteButton productId={product.productId} refresh={fetchProducts} />
                                             </div>

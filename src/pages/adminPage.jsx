@@ -3,14 +3,15 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import { MdDashboard, MdShoppingBasket, MdPeople, MdLogout, MdInventory } from 'react-icons/md';
 import AdminProductsPage from './admin/adminProductsPage';
 import AdminAddProductForm from './admin/adminAddProductForm';
+import AdminEditProductForm from './admin/adminEditProductForm';
 
 export default function AdminPage() {
     const location = useLocation();
 
     const navItems = [
-        { 
-            path: '/admin', 
-            name: 'Orders', 
+        {
+            path: '/admin',
+            name: 'Orders',
             icon: <MdShoppingBasket size={22} />,
             element: (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -24,15 +25,15 @@ export default function AdminPage() {
                 </div>
             )
         },
-        { 
-            path: '/admin/products', 
-            name: 'Products', 
-            icon: <MdInventory size={22} />, 
-            element: <AdminProductsPage /> 
+        {
+            path: '/admin/products',
+            name: 'Products',
+            icon: <MdInventory size={22} />,
+            element: <AdminProductsPage />
         },
-        { 
-            path: '/admin/users', 
-            name: 'Users', 
+        {
+            path: '/admin/users',
+            name: 'Users',
             icon: <MdPeople size={22} />,
             element: (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -64,7 +65,7 @@ export default function AdminPage() {
                         <span>Admin</span>
                     </h1>
                 </div>
-                
+
                 <nav className="flex-1 p-6 flex flex-col gap-2 overflow-y-auto">
                     {navItems.map((item) => {
                         const isActive = location.pathname.replace(/\/$/, '') === item.path.replace(/\/$/, '');
@@ -72,11 +73,10 @@ export default function AdminPage() {
                             <Link
                                 key={item.path}
                                 to={item.path}
-                                className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-200 ${
-                                    isActive 
-                                    ? 'bg-amber-600 text-white shadow-lg shadow-amber-200' 
-                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-                                }`}
+                                className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-200 ${isActive
+                                        ? 'bg-amber-600 text-white shadow-lg shadow-amber-200'
+                                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                    }`}
                             >
                                 {item.icon}
                                 <span className="font-medium">{item.name}</span>
@@ -114,13 +114,14 @@ export default function AdminPage() {
                     <div className="max-w-7xl mx-auto">
                         <Routes>
                             {navItems.map((item) => (
-                                <Route 
-                                    key={item.path} 
-                                    path={item.path === '/admin' ? '/' : item.path.replace('/admin', '')} 
-                                    element={item.element} 
+                                <Route
+                                    key={item.path}
+                                    path={item.path === '/admin' ? '/' : item.path.replace('/admin', '')}
+                                    element={item.element}
                                 />
                             ))}
                             <Route path="/products/add" element={<AdminAddProductForm />} />
+                            <Route path="/products/edit/:productId" element={<AdminEditProductForm />} />
                         </Routes>
                     </div>
                 </main>
