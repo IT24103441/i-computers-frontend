@@ -60,9 +60,9 @@ export function addToCart(product, qty) {
             product: {
                 productId: product.productId,
                 name: product.name,
-                image: product.images[0],
+                image: product.images?.[0] || product.image || "",
                 price: product.price,
-                labelledPrice: product.labelledPrice
+                labelledPrice: product.labelledPrice ?? product.labeledPrice
             },
             qty: qty
         })

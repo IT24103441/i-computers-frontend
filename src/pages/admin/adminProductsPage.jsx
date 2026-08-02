@@ -129,9 +129,9 @@ export default function AdminProductsPage() {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <div className="font-bold text-gray-900">LKR {product.price.toLocaleString()}</div>
-                                        {product.labelledPrice > product.price && (
-                                            <div className="text-xs text-gray-400 line-through">LKR {product.labelledPrice.toLocaleString()}</div>
+                                        <div className="font-bold text-gray-900">LKR {Number(product.price).toLocaleString()}</div>
+                                        {(Number(product.labelledPrice ?? product.labeledPrice) > Number(product.price)) && (
+                                            <div className="text-xs text-gray-400 line-through">LKR {Number(product.labelledPrice ?? product.labeledPrice).toLocaleString()}</div>
                                         )}
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-600">
@@ -151,7 +151,7 @@ export default function AdminProductsPage() {
                                          })()}
                                      </td>
                                     <td className="px-6 py-4 text-right">
-                                        <div className="flex justify-end gap-2">
+                                        <div className="flex justify-end items-center gap-3">
                                             <Link
                                                 className="p-2 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
                                                 title="Edit"
@@ -160,9 +160,7 @@ export default function AdminProductsPage() {
                                             >
                                                 <FaEdit size={18} />
                                             </Link>
-                                            <div className="w-full flex justify-center items-center gap-4">
-                                                <ProductDeleteButton productId={product.productId} refresh={fetchProducts} />
-                                            </div>
+                                            <ProductDeleteButton productId={product.productId} refresh={fetchProducts} />
                                         </div>
                                     </td>
                                 </tr>

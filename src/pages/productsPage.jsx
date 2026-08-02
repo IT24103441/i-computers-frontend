@@ -28,9 +28,9 @@ export default function ProductsPage() {
             {
                 !loading && <>
                     {
-                        products.map((product) => {
+                        products.map((product, index) => {
                             return (
-                                <ProductCard key={product.id} product={product} />
+                                <ProductCard key={product.productId || product._id || product.id || index} product={product} />
                             )
                         })
                     }
