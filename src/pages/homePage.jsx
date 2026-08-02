@@ -3,6 +3,7 @@ import Header from "../components/header";
 import ProductsPage from "./productsPage";
 import ProductOverview from "./productOverview";
 import CartPage from "./cartPage";
+import CheckoutPage from "./checkout";
 export default function HomePage() {
     return (
         <div className="w-full h-full bg-primary text-secondary">
@@ -20,6 +21,8 @@ export default function HomePage() {
                     <Route path="/overview/:productId" element={<ProductOverview />} />
                     {/* cart */}
                     <Route path="/cart" element={<CartPage />} />
+                    {/* checkout */}
+                    <Route path="/checkout" element={<CheckoutPage />} />
                     <Route path="/*" element={<h1>404 Not Found</h1>} />
                 </Routes>
             </div>
