@@ -12,22 +12,25 @@ export default function LoginPage() {
   async function handleLogin() {
     setLoading(true)
     try {
-    const res = await api.post('/users/login', {
-      email : email,
-      password : password
-    })
-      localStorage.setItem('token', res.data.token)
-if(res.data.isAdmin) {
-  navigate('/admin')
-} else {
-  navigate('/')
-}
-
+      const res = await api.post('/users/login', {
+        email: email,
+        password: password
+      })
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token)
+        toast.success(res.data.message || "Login successful")
+        if (res.data.isAdmin) {
+          navigate('/admin')
+        } else {
+          navigate('/')
+        }
+      } else {
+        toast.error(res.data.message || "Login failed")
+      }
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong")
     }
     setLoading(false)
-
   }
 
   return (
