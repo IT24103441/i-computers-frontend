@@ -81,7 +81,7 @@ export default function AdminOrdersPage() {
                                 <td>{getFormattedPrice(order.totalAmount)}</td>
                                 <td>
                                     <div className="w-full flex justify-center items-center gap-4">
-                                        <AdminOrderDataModal order={order} refresh={() => setLoading(true)} />
+                                        <AdminOrderDataModal isAdmin={true} order={order} refresh={() => setLoading(true)} />
                                     </div>
                                 </td>
                             </tr>

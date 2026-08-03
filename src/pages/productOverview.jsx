@@ -38,13 +38,16 @@ export default function ProductOverview() {
 
     return (
         <div className="w-full h-full flex justify-center items-center">
-            <div className="w-1/2 h-full flex justify-center items-center">
+            <div className="w-full h-auto lg:h-full pt-10 lg:pt-0 flex flex-col lg:flex-row justify-center items-center">
                 <ProductImageSlideShow images={product.images} />
             </div>
 
-            <div className="w-1/2 flex flex-col p-6 h-full">
+            <div className="w-[200px] lg:w-[600px] h-[250px] lg:h-[150px]  flex flex-col p-6 h-full">
                 <span className="text-gray-500 text-sm italic mb-4">
                     {product.productId}
+                </span>
+                <span className="text-gray-500 text-sm italic mb-4">
+                    {product.stock === 0 ? "Out of Stock" : "In Stock"}
                 </span>
 
                 {(product.brand || product.model) && (

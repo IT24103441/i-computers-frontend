@@ -53,7 +53,7 @@ export default function AdminOrderDataModal(props) {
                                 <p>Phone: {order.phone}</p>
                                 <p>Address: {order.addressLine1} {order.addressLine2} , {order.city}</p>
                                 <p>Status: {order.status}
-                                    <select className="ml-4 border" defaultValue={order.status}
+                                    {props.isAdmin && <select className="ml-4 border" defaultValue={order.status}
                                         onChange={
                                             (e) => {
                                                 updateOrderStatus(e.target.value)
@@ -63,7 +63,7 @@ export default function AdminOrderDataModal(props) {
                                         <option value="Processing">Processing</option>
                                         <option value="Shipped">Shipped</option>
                                         <option value="Delivered">Delivered</option>
-                                    </select>
+                                    </select>}
                                 </p>
                             </div>
                         </div>

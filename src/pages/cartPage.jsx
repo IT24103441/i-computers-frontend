@@ -9,7 +9,7 @@ export default function CartPage() {
 
     if (!cart || cart.length === 0) {
         return (
-            <div className="w-full h-full flex flex-col items-center justify-center p-8">
+            <div className="w-full h-auto lg:h-full overflow-y-scroll flex items-center flex-col">
                 <h2 className="text-2xl font-bold text-gray-700 mb-4">Your Cart is Empty</h2>
                 <p className="text-gray-500 mb-6">Looks like you haven't added any items to your cart yet.</p>
                 <Link to="/products" className="w-[200px] p-2 text-white bg-accent rounded-sm hover:bg-accent/90 text-center">
@@ -20,12 +20,12 @@ export default function CartPage() {
     }
 
     return (
-        <div className="w-full h-full overflow-y-scroll flex items-center flex-col">
+        <div className="w-full h-auto lg:h-full overflow-y-scroll flex items-center flex-col">
             {
                 cart.map(
                     (cartItem, index) => {
                         return (
-                            <div className="w-[600px] h-[150px] shadow-2xl bg-white my-4 flex flex-row relative" key={cartItem.product?.productId || index}>
+                            <div className="w-[400px] lg:w-[600px] h-[250px] lg:h-[150px]  shadow-2xl bg-white my-4 flex flex-row relative" key={cartItem.product?.productId || index}>
                                 <img src={cartItem.product.image} className="h-full aspect-square object-cover" alt={cartItem.product.name} />
 
                                 <div className="h-full w-[450px] flex flex-col p-4">
@@ -80,13 +80,13 @@ export default function CartPage() {
                 )
             }
 
-            <div className="w-[600px] h-[150px] sticky bottom-0 shadow-2xl bg-white my-4 flex flex-row items-center justify-between p-4">
-                <Link to="/checkout" className="w-[220px] p-2 text-white bg-accent rounded-sm hover:bg-accent/90 text-center" state={cart}>
+            <div className="w-[400px] lg:w-[600px] h-[250px] lg:h-[150px] sticky bottom-0 shadow-2xl bg-white my-4 flex flex-row items-center justify-between p-4">
+                <Link to="/checkout" className="w-[120px] lg:w-[220px] p-2 text-white bg-accent rounded-sm hover:bg-accent/90 text-center" state={cart}>
                     Checkout
                 </Link>
                 <div className="flex justify-end h-full items-center">
-                    <span className="text-gray-500 text-lg mr-4">Total:</span>
-                    <span className="text-accent text-2xl font-bold ">
+                    <span className="text-gray-500 lg:text-lg text-sm mr-4 hidden lg:block">Total:</span>
+                    <span className="text-accent lg:text-2xl text-sm font-bold ">
                         {getFormattedPrice(getTotal(cart))}
                     </span>
                 </div>
