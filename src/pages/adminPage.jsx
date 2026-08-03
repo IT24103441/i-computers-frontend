@@ -13,17 +13,7 @@ export default function AdminPage() {
             path: '/admin',
             name: 'Orders',
             icon: <MdShoppingBasket size={22} />,
-            element: (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                        <h3 className="text-xl font-bold mb-4 text-gray-900">Orders Management</h3>
-                        <div className="h-64 border-2 border-dashed border-gray-100 rounded-2xl flex flex-col items-center justify-center text-gray-400 gap-2">
-                            <MdShoppingBasket size={48} className="opacity-20" />
-                            <p>Real-time order data will be listed here.</p>
-                        </div>
-                    </div>
-                </div>
-            )
+            element: <AdminOrdersPage />
         },
         {
             path: '/admin/products',

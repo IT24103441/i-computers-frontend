@@ -25,9 +25,14 @@ export default function AdminOrdersPage() {
                 })
                 .then((res) => {
                     console.log(res.data);
-                    setOrders(res.data.orders);
-                    setTotalOrders(res.data.totalOrders);
-                    setTotalPages(res.data.totalPages);
+                    setOrders(res.data.orders || (Array.isArray(res.data) ? res.data : []));
+                    setTotalOrders(res.data.totalOrders ?? (res.data.orders ? res.data.orders.length : 0));
+                    setTotalPages(res.data.totalPages ?? 1);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    console.error("Failed to load orders:", err);
+                    setOrders([]);
                     setLoading(false);
                 });
         }
