@@ -4,7 +4,7 @@ import { MdDashboard, MdShoppingBasket, MdPeople, MdLogout, MdInventory } from '
 import AdminProductsPage from './admin/adminProductsPage';
 import AdminAddProductForm from './admin/adminAddProductForm';
 import AdminEditProductForm from './admin/adminEditProductForm';
-
+import AdminOrdersPage from "./admin/adminOrdersPage";
 export default function AdminPage() {
     const location = useLocation();
 
@@ -74,8 +74,8 @@ export default function AdminPage() {
                                 key={item.path}
                                 to={item.path}
                                 className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-200 ${isActive
-                                        ? 'bg-amber-600 text-white shadow-lg shadow-amber-200'
-                                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                    ? 'bg-amber-600 text-white shadow-lg shadow-amber-200'
+                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                                     }`}
                             >
                                 {item.icon}
