@@ -7,9 +7,9 @@ import CheckoutPage from "./checkout";
 import MyOrders from "./myOrders";
 export default function HomePage() {
     return (
-        <div className="w-full h-full bg-primary text-secondary">
+        <div className="w-full min-h-screen bg-primary text-secondary">
             <Header />
-            <div className="h-[calc(100%-100px)] w-full ">
+            <div className="w-full min-h-[calc(100vh-100px)]">
                 <Routes>
                     <Route path="/" element={<h1>Home Page</h1>} />
                     {/* products */}

@@ -37,53 +37,60 @@ export default function ProductOverview() {
     }
 
     return (
-        <div className="w-full h-full flex justify-center items-center">
-            <div className="w-full h-auto lg:h-full pt-10 lg:pt-0 flex flex-col lg:flex-row justify-center items-center">
+        <div className="w-full min-h-screen p-4 sm:p-8 lg:p-12 pb-28 lg:pb-12 flex flex-col lg:flex-row items-center lg:items-start justify-center gap-8 max-w-6xl mx-auto">
+            {/* Image Section */}
+            <div className="w-full lg:w-1/2 flex justify-center items-center">
                 <ProductImageSlideShow images={product.images} />
             </div>
 
-            <div className="w-[200px] lg:w-[600px] h-[250px] lg:h-[150px]  flex flex-col p-6 h-full">
-                <span className="text-gray-500 text-sm italic mb-4">
-                    {product.productId}
-                </span>
-                <span className="text-gray-500 text-sm italic mb-4">
-                    {product.stock === 0 ? "Out of Stock" : "In Stock"}
-                </span>
+            {/* Details Section */}
+            <div className="w-full lg:w-1/2 flex flex-col p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between gap-4 mb-3">
+                    <span className="text-gray-400 text-xs font-mono">
+                        ID: {product.productId}
+                    </span>
+                    <span className={`px-3 py-1 text-xs font-semibold rounded-full ${product.stock === 0 ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
+                        {product.stock === 0 ? "Out of Stock" : "In Stock"}
+                    </span>
+                </div>
 
                 {(product.brand || product.model) && (
-                    <p className="text-gray-500 text-sm italic mb-4">
+                    <p className="text-amber-600 font-medium text-sm mb-1">
                         {`${product.brand || ""} ${product.model || ""}`.trim()}
                     </p>
                 )}
 
-                <h1 className="text-3xl font-semibold mb-6">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 leading-tight">
                     {product.name}
                     {Array.isArray(product.altNames) &&
                         product.altNames.map((altName, index) => (
-                            <span key={index} className="text-gray-500">
+                            <span key={index} className="text-gray-400 font-normal text-lg">
                                 {" | " + altName}
                             </span>
                         ))}
                 </h1>
 
-                {Number(product.labelledPrice ?? product.labeledPrice) >
-                    Number(product.price) && (
-                        <p className="text-gray-500 text-lg line-through mb-2">
+                <div className="flex items-baseline gap-3 mb-4">
+                    <p className="text-2xl sm:text-3xl text-amber-600 font-bold">
+                        {getFormattedPrice(product.price)}
+                    </p>
+                    {Number(product.labelledPrice ?? product.labeledPrice) > Number(product.price) && (
+                        <p className="text-gray-400 text-base line-through">
                             {getFormattedPrice(
                                 product.labelledPrice ?? product.labeledPrice
                             )}
                         </p>
                     )}
+                </div>
 
-                <p className="text-xl text-accent font-semibold">
-                    {getFormattedPrice(product.price)}
-                </p>
+                <div className="border-t border-gray-100 pt-4 mb-6">
+                    <h3 className="text-sm font-semibold text-gray-800 mb-2">Description</h3>
+                    <p className="text-gray-600 text-sm leading-relaxed">{product.description}</p>
+                </div>
 
-                <p className="text-gray-700 mt-6">{product.description}</p>
-
-                <div className="flex">
+                <div className="flex flex-col sm:flex-row gap-3 mt-auto pt-4 border-t border-gray-100">
                     <button
-                        className="w-[220px] p-2 text-white bg-accent rounded-sm hover:bg-accent/90 mt-6"
+                        className="w-full sm:w-1/2 py-3 px-6 text-white bg-amber-600 font-semibold rounded-xl hover:bg-amber-700 transition-colors shadow-md flex items-center justify-center gap-2 active:scale-[0.98]"
                         onClick={() => {
                             addToCart(product, 1);
                             toast.success("Product added to cart");
@@ -93,14 +100,14 @@ export default function ProductOverview() {
                     </button>
 
                     <Link
-                        className="w-[220px] p-2 text-gray-700 bg-gray-300 rounded-sm hover:bg-gray-400 mt-6 ml-4 text-center"
+                        className="w-full sm:w-1/2 py-3 px-6 text-gray-800 bg-gray-100 font-semibold rounded-xl hover:bg-gray-200 transition-colors text-center flex items-center justify-center active:scale-[0.98]"
                         to="/checkout"
                         state={[
                             {
                                 product: {
                                     productId: product.productId,
                                     name: product.name,
-                                    image: product.images?.[0],
+                                    image: product.images?.[0] || product.image,
                                     price: product.price,
                                     labelledPrice:
                                         product.labelledPrice ??

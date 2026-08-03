@@ -34,8 +34,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="w-full h-full bg-[url('/login-bg.jpg')] bg-no-repeat bg-center bg-cover flex items-center justify-center">
-      <div className="w-[400px] p-8 backdrop-blur-xl bg-white/20 border border-white/30 rounded-2xl shadow-2xl flex flex-col gap-6">
+    <div className="w-full min-h-screen bg-[url('/login-bg.jpg')] bg-no-repeat bg-center bg-cover flex items-center justify-center p-4">
+      <div className="w-full max-w-md p-6 sm:p-8 backdrop-blur-xl bg-white/20 border border-white/30 rounded-2xl shadow-2xl flex flex-col gap-6">
         <h1 className="text-4xl font-bold text-white text-center">Login</h1>
         <div className="flex flex-col gap-4">
           <input

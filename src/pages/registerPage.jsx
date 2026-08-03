@@ -33,22 +33,22 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="w-full h-full bg-[url('/login-bg.jpg')] bg-no-repeat bg-center bg-cover flex items-center justify-center">
-      <div className="w-[450px] p-8 backdrop-blur-xl bg-white/20 border border-white/30 rounded-2xl shadow-2xl flex flex-col gap-6">
+    <div className="w-full min-h-screen bg-[url('/login-bg.jpg')] bg-no-repeat bg-center bg-cover flex items-center justify-center p-4">
+      <div className="w-full max-w-md p-6 sm:p-8 backdrop-blur-xl bg-white/20 border border-white/30 rounded-2xl shadow-2xl flex flex-col gap-6">
         <h1 className="text-4xl font-bold text-white text-center">Register</h1>
         <div className="flex flex-col gap-4">
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <input
               type="text"
               placeholder="First Name"
-              className="w-1/2 p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
+              className="w-full sm:w-1/2 p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
               onChange={(e) => setFirstName(e.target.value)}
               value={firstName}
             />
             <input
               type="text"
               placeholder="Last Name"
-              className="w-1/2 p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
+              className="w-full sm:w-1/2 p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
               onChange={(e) => setLastName(e.target.value)}
               value={lastName}
             />

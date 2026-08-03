@@ -21,7 +21,7 @@ export default function ProductsPage() {
         }
     }, [loading]);
     return (
-        <div className="w-full bg-primary flex justify-center items-center gap-6 flex-wrap p-20">
+        <div className="w-full min-h-screen bg-primary flex justify-center items-center gap-6 flex-wrap p-4 sm:p-8 lg:p-12 pb-28 lg:pb-12 max-w-7xl mx-auto">
             {
                 loading && <LoadingScreen />
             }
