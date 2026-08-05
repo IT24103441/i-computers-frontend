@@ -5,6 +5,7 @@ import ProductOverview from "./productOverview";
 import CartPage from "./cartPage";
 import CheckoutPage from "./checkout";
 import MyOrders from "./myOrders";
+import Settings from "./settings";
 export default function HomePage() {
     return (
         <div className="w-full min-h-screen bg-primary text-secondary">
@@ -26,6 +27,8 @@ export default function HomePage() {
                     <Route path="/checkout" element={<CheckoutPage />} />
                     {/* my-orders */}
                     <Route path="/my-orders" element={<MyOrders />} />
+                    {/* settings */}
+                    <Route path="/settings" element={<Settings />} />
                     <Route path="/*" element={<h1>404 Not Found</h1>} />
                 </Routes>
             </div>

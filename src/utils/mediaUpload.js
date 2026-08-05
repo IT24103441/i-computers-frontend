@@ -13,13 +13,17 @@ export default function uploadMedia(file) {
             } else {
                 const timestamp = new Date().getTime()
                 const fileName = timestamp + "-" + file.name
-                supabase.storage.from("images").upload(fileName, file).then(() => {
-                    const { data } = supabase.storage.from("images").getPublicUrl(fileName)
-                    resolve(data.publicUrl)
+                supabase.storage.from("images").upload(fileName, file, { upsert: true }).then((res) => {
+                    if (res.error) {
+                        reject(res.error.message || res.error);
+                        return;
+                    }
+                    const { data } = supabase.storage.from("images").getPublicUrl(fileName);
+                    resolve(data.publicUrl);
                 })
                     .catch((error) => {
-                        reject(error)
-                    })
+                        reject(error);
+                    });
             }
         }
     );
