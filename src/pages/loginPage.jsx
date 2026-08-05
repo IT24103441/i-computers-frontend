@@ -2,13 +2,45 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '../utils/api';
-
+import { useGoogleLogin } from '@react-oauth/google';
+import { BsGoogle } from 'react-icons/bs';
 export default function LoginPage() {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [loading, setLoading] = React.useState(false)
   const navigate = useNavigate()
 
+  const googleLogin = useGoogleLogin(
+    {
+      onSuccess: (response) => {
+        setLoading(true);
+        api.post("/users/google-login", {
+          accessToken: response.access_token
+        }).then((res) => {
+          if (res.data.token) {
+            localStorage.setItem("token", res.data.token);
+            toast.success(res.data.message || "Login successful");
+            if (res.data.isAdmin) {
+              navigate("/admin");
+            } else {
+              navigate("/");
+            }
+          } else {
+            toast.error(res.data.message || "Google login failed");
+          }
+        }).catch((err) => {
+          console.error(err);
+          toast.error(err?.response?.data?.message || "Google login failed");
+        }).finally(() => {
+          setLoading(false);
+        });
+      },
+      onError: (err) => {
+        console.error(err);
+        toast.error("Google Sign-In was cancelled or failed");
+      }
+    }
+  )
   async function handleLogin() {
     setLoading(true)
     try {
@@ -53,14 +85,24 @@ export default function LoginPage() {
             value={password}
           />
         </div>
-        <button  disabled={loading} onClick={handleLogin} className="w-full py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors shadow-lg flex items-center justify-center">
+        <button disabled={loading} onClick={handleLogin} className="w-full py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors shadow-lg flex items-center justify-center">
           {
             loading ? "Loading..." : "Login"
           }
         </button>
+        <button
+          disabled={loading}
+          onClick={() => googleLogin()}
+          className="w-full py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg flex justify-center items-center gap-2 border border-white/20 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <BsGoogle />
+          <span>Sign In with Google</span>
+        </button>
+
         <p className="text-white/80 text-center">
           Don't have an account? <Link to="/register" className="text-white font-bold hover:underline">Register</Link>
         </p>
+
       </div>
     </div>
   );
