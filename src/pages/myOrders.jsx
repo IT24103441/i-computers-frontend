@@ -15,28 +15,26 @@ export default function MyOrders() {
     const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        if (loading) {
-            const token = localStorage.getItem("token");
-            api
-                .get("/orders/" + pageNumber + "/" + pageSize, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((res) => {
-                    console.log(res.data);
-                    setOrders(res.data.orders || (Array.isArray(res.data) ? res.data : []));
-                    setTotalOrders(res.data.totalOrders ?? (res.data.orders ? res.data.orders.length : 0));
-                    setTotalPages(res.data.totalPages ?? 1);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    console.error("Error fetching my orders:", err);
-                    setOrders([]);
-                    setLoading(false);
-                });
-        }
-    }, [loading]);
+        const token = localStorage.getItem("token");
+        api
+            .get("/orders/" + pageNumber + "/" + pageSize, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((res) => {
+                console.log(res.data);
+                setOrders(res.data.orders || (Array.isArray(res.data) ? res.data : []));
+                setTotalOrders(res.data.totalOrders ?? (res.data.orders ? res.data.orders.length : 0));
+                setTotalPages(res.data.totalPages ?? 1);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("Error fetching my orders:", err);
+                setOrders([]);
+                setLoading(false);
+            });
+    }, [pageNumber, pageSize]);
 
     return (
         <div className="w-full min-h-screen p-4 sm:p-8 max-w-6xl mx-auto flex flex-col items-center pb-28 lg:pb-12">

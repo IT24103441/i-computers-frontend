@@ -56,7 +56,7 @@ export default function AdminEditProductForm() {
                     setIsLoading(false);
                 });
         }
-    }, [location.state, params.productId]);
+    }, [location.state, params.productId, productId]);
 
     async function editProduct() {
         setIsLoading(true);

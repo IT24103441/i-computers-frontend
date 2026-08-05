@@ -1,84 +1,154 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import api from '../utils/api';
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { BiKey } from "react-icons/bi";
+import { BsGoogle } from "react-icons/bs";
+import { MdEmail } from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../utils/api";
+import { useGoogleLogin } from "@react-oauth/google";
 
 export default function RegisterPage() {
-  const [firstName, setFirstName] = React.useState('')
-  const [lastName, setLastName] = React.useState('')
-  const [email, setEmail] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [loading, setLoading] = React.useState(false)
+  const [email, setEmail] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const googleLogin = useGoogleLogin(
+    {
+      onSuccess: (response) => {
+
+        console.log(response);
+
+        api.post("/users/google-login", {
+          accessToken: response.access_token
+        }).then((res) => {
+
+          console.log(res);
+          localStorage.setItem("token", res.data.token)
+          if (res.data.isAdmin) {
+            navigate("/admin")
+          } else {
+            navigate("/")
+          }
+
+        }).catch((err) => {
+          console.log(err);
+        })
+      },
+      onError: (err) => {
+        console.log(err);
+      }
+    }
+  )
+
+
 
   async function handleRegister() {
-    if (!firstName || !lastName || !email || !password) {
-      toast.error("Please fill in all fields")
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match")
       return
     }
+
     setLoading(true)
+
     try {
-      await api.post('/users/register', {
-        firstName,
-        lastName,
-        email,
-        password
+      await api.post("/users/", {
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName
       })
-      toast.success("Registration successful! Please login.")
-      navigate('/login')
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Registration failed")
+
+      navigate("/signin")
+
+    } catch (err) {
+
+      toast.error(err?.response?.data?.message || "Registration failed")
+
     }
     setLoading(false)
   }
 
   return (
-    <div className="w-full min-h-screen bg-[url('/login-bg.jpg')] bg-no-repeat bg-center bg-cover flex items-center justify-center p-4">
-      <div className="w-full max-w-md p-6 sm:p-8 backdrop-blur-xl bg-white/20 border border-white/30 rounded-2xl shadow-2xl flex flex-col gap-6">
-        <h1 className="text-4xl font-bold text-white text-center">Register</h1>
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <input
-              type="text"
-              placeholder="First Name"
-              className="w-full sm:w-1/2 p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
-              onChange={(e) => setFirstName(e.target.value)}
-              value={firstName}
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              className="w-full sm:w-1/2 p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
-              onChange={(e) => setLastName(e.target.value)}
-              value={lastName}
+    <div className="w-full h-full bg-green-600">
+      Register Page
+      <div className="w-full h-full bg-[url('/login-bg.jpg')] bg-cover bg-no-repeat flex justify-center items-center">
+
+        <div className="w-[400px]  backdrop-blur-md shadow-2xl shadow-white rounded-xl flex flex-col p-4">
+
+          <h1 className="w-full h-[80px] text-center text-3xl font-bold text-white">Register</h1>
+
+          <div className="w-full ">
+            <label className="text-white text-lg flex items-center  gap-2"><MdEmail /> Email</label>
+            <input className="w-full h-[40px] rounded-md px-2 border border-white" type="email" placeholder="kasun@gmail.com"
+              onChange={
+                (e) => {
+                  setEmail(e.target.value)
+                }
+              }
+              value={email}
             />
           </div>
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          />
+          <div className="w-full  mt-5 flex flex-row gap-2">
+            <div className="w-1/2">
+              <label className="text-white text-lg flex items-center  gap-2">First Name</label>
+              <input className="w-full h-[40px] rounded-md px-2 border border-white" type="text" placeholder="Kasun"
+                onChange={
+                  (e) => {
+                    setFirstName(e.target.value)
+                  }
+                }
+                value={firstName}
+              />
+            </div>
+            <div className="w-1/2">
+              <label className="text-white text-lg flex items-center  gap-2">Last Name</label>
+              <input className="w-full h-[40px] rounded-md px-2 border border-white" type="text" placeholder="Perera"
+                onChange={
+                  (e) => {
+                    setLastName(e.target.value)
+                  }
+                }
+                value={lastName}
+              />
+            </div>
+          </div>
+          <div className="w-full  mt-5">
+            <label className="text-white text-lg flex items-center  gap-2"><BiKey /> Password</label>
+            <input
+              onChange={
+                (e) => {
+                  setPassword(e.target.value)
+                }
+              }
+              type="password"
+              value={password}
+              className="w-full h-[40px] rounded-md px-2 border border-white" placeholder="•••••••••••" />
+          </div>
+          <div className="w-full  mt-5">
+            <label className="text-white text-lg flex items-center  gap-2"><BiKey /> Confirm Password</label>
+            <input
+              onChange={
+                (e) => {
+                  setConfirmPassword(e.target.value)
+                }
+              }
+              type="password"
+              value={confirmPassword}
+              className="w-full h-[40px] rounded-md px-2 border border-white" placeholder="•••••••••••" />
+          </div>
+          <button disabled={loading} className="w-full h-[50px] bg-accent mt-10 text-white rounded-lg" onClick={handleRegister}>
+            {
+              loading ? "Loading..." : "Sign Up"
+            }
+          </button>
+          <p className="w-full h-2 text-white text-right italic ">Already have an account? click <Link to="/signin" className="font-bold text-accent">Here</Link> </p>
+          <button onClick={googleLogin} className="w-full h-[50px] bg-secondary mt-5 text-white rounded-lg flex justify-center items-center gap-2"><BsGoogle /> Sign In with Google</button>
         </div>
-        <button 
-          disabled={loading} 
-          onClick={handleRegister} 
-          className="w-full py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors shadow-lg flex items-center justify-center"
-        >
-          {loading ? "Registering..." : "Register"}
-        </button>
-        <p className="text-white/80 text-center">
-          Already have an account? <Link to="/login" className="text-white font-bold hover:underline">Login</Link>
-        </p>
       </div>
     </div>
-  );
+  )
 }

@@ -12,35 +12,79 @@ export default function LoginPage() {
 
   const googleLogin = useGoogleLogin(
     {
-      onSuccess: (response) => {
+      onSuccess: async (response) => {
         setLoading(true);
-        api.post("/users/google-login", {
-          accessToken: response.access_token
-        }).then((res) => {
-          if (res.data.token) {
+        try {
+          const tokenVal = response.access_token || response.code || response.credential;
+          const payload = {
+            accessToken: tokenVal,
+            token: tokenVal,
+            googleToken: tokenVal,
+            code: response.code
+          };
+
+          const attempts = [
+            () => api.post("/users/google-login", payload),
+            () => api.post("/users/google", payload),
+            () => api.post("/users/login/google", payload),
+            () => api.post("/users/google/login", payload),
+            () => api.post("/users/login-google", payload),
+            () => api.post("/users/googlelogin", payload),
+            () => api.post("/users/google-auth", payload),
+            () => api.post("/users/auth/google", payload),
+          ];
+
+          let lastErr = null;
+          let successRes = null;
+
+          for (const attempt of attempts) {
+            try {
+              const res = await attempt();
+              if (res?.data) {
+                successRes = res;
+                break;
+              }
+            } catch (err) {
+              lastErr = err;
+              if (err?.response?.status !== 404 && err?.response?.status !== 405) {
+                throw err;
+              }
+            }
+          }
+
+          if (!successRes && lastErr) {
+            throw lastErr;
+          }
+
+          const res = successRes;
+          if (res?.data?.token) {
             localStorage.setItem("token", res.data.token);
-            toast.success(res.data.message || "Login successful");
+            toast.success(res.data.message || "Google Login successful");
             if (res.data.isAdmin) {
               navigate("/admin");
             } else {
               navigate("/");
             }
           } else {
-            toast.error(res.data.message || "Google login failed");
+            toast.error(res?.data?.message || "Google Login failed: No token returned");
           }
-        }).catch((err) => {
-          console.error(err);
-          toast.error(err?.response?.data?.message || "Google login failed");
-        }).finally(() => {
+        } catch (err) {
+          console.error("Google Login error:", err);
+          if (err?.response?.status === 404) {
+            toast.error("Google Login endpoint is not implemented on the backend (404)");
+          } else {
+            toast.error(err?.response?.data?.message || err?.message || "Google Login failed");
+          }
+        } finally {
           setLoading(false);
-        });
+        }
       },
       onError: (err) => {
-        console.error(err);
-        toast.error("Google Sign-In was cancelled or failed");
+        console.error("Google OAuth error:", err);
+        toast.error(err?.error_description || err?.error || "Google Sign-In failed or was closed");
       }
     }
-  )
+  );
   async function handleLogin() {
     setLoading(true)
     try {

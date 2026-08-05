@@ -15,28 +15,26 @@ export default function AdminOrdersPage() {
     const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        if (loading) {
-            const token = localStorage.getItem("token");
-            api
-                .get("/orders/" + pageNumber + "/" + pageSize, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((res) => {
-                    console.log(res.data);
-                    setOrders(res.data.orders || (Array.isArray(res.data) ? res.data : []));
-                    setTotalOrders(res.data.totalOrders ?? (res.data.orders ? res.data.orders.length : 0));
-                    setTotalPages(res.data.totalPages ?? 1);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    console.error("Failed to load orders:", err);
-                    setOrders([]);
-                    setLoading(false);
-                });
-        }
-    }, [loading]);
+        const token = localStorage.getItem("token");
+        api
+            .get("/orders/" + pageNumber + "/" + pageSize, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((res) => {
+                console.log(res.data);
+                setOrders(res.data.orders || (Array.isArray(res.data) ? res.data : []));
+                setTotalOrders(res.data.totalOrders ?? (res.data.orders ? res.data.orders.length : 0));
+                setTotalPages(res.data.totalPages ?? 1);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("Failed to load orders:", err);
+                setOrders([]);
+                setLoading(false);
+            });
+    }, [pageNumber, pageSize]);
 
     //backend call orders fetch and setOrders
 

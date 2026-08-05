@@ -13,37 +13,30 @@ export default function AdminPage() {
     const location = useLocation();
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
-    useEffect(
-        () => {
-            const token = localStorage.getItem("token");
+    useEffect(() => {
+        const token = localStorage.getItem("token");
 
-            if (token != null) {
-
-                api.get("/users/me", {
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                }).then((res) => {
-
-                    if (res.data.isAdmin) {
-                        setUser(res.data);
-                    } else {
-                        toast.error("You are not authorized to access this page");
-                        navigate("/");
-                    }
-
-                }).catch((err) => {
-                    console.log(err);
-                    setUser(null);
-                });
-
-            } else {
-                toast.error("You are not authorized to access this page");
-                navigate("/login");
-            }
+        if (token != null) {
+            api.get("/users/me", {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }).then((res) => {
+                if (res.data.isAdmin) {
+                    setUser(res.data);
+                } else {
+                    toast.error("You are not authorized to access this page");
+                    navigate("/");
+                }
+            }).catch((err) => {
+                console.log(err);
+                setUser(null);
+            });
+        } else {
+            toast.error("You are not authorized to access this page");
+            navigate("/login");
         }
-        , []
-    )
+    }, [navigate]);
 
     const navItems = [
         {
@@ -135,11 +128,13 @@ export default function AdminPage() {
                     </h2>
                     <div className="flex items-center gap-4 flex-shrink-0">
                         <div className="hidden sm:flex flex-col items-end">
-                            <span className="text-sm font-bold text-gray-900">Administrator</span>
-                            <span className="text-xs text-gray-500">Super Admin</span>
+                            <span className="text-sm font-bold text-gray-900">
+                                {user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || "Administrator" : "Administrator"}
+                            </span>
+                            <span className="text-xs text-gray-500">{user?.email || "Super Admin"}</span>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-amber-400 text-white flex items-center justify-center font-bold shadow-md border-2 border-white">
-                            AD
+                            {user?.firstName ? `${user.firstName[0]}${user.lastName ? user.lastName[0] : ''}` : "AD"}
                         </div>
                     </div>
                 </header>

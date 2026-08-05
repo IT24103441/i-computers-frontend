@@ -6,37 +6,6 @@ import api from "../../utils/api";
 import LoadingScreen from "../../components/loadingScreen";
 import ProductDeleteButton from "../../components/productDeleteButton";
 
-const sampleProducts = [
-    {
-        productId: "PRD001",
-        name: "NVIDIA GeForce RTX 4060 8GB",
-        altNames: ["RTX 4060", "GeForce RTX 4060", "4060 8GB"],
-        price: 145000,
-        labelledPrice: 155000,
-        description: "Mid-range graphics card suitable for 1080p and 1440p gaming.",
-        images: ["/images/products/rtx4060-front.png"],
-        brand: "NVIDIA",
-        model: "GeForce RTX 4060 8GB",
-        category: "Graphics Card",
-        isAvailable: true,
-        stock: 12,
-    },
-    {
-        productId: "PRD002",
-        name: "AMD Ryzen 5 7600 Processor",
-        altNames: ["Ryzen 5 7600", "AMD 7600", "R5 7600"],
-        price: 72000,
-        labelledPrice: 79000,
-        description: "6-core 12-thread desktop processor.",
-        images: ["/images/products/ryzen5-7600-1.png"],
-        brand: "AMD",
-        model: "Ryzen 5 7600",
-        category: "Processor",
-        isAvailable: true,
-        stock: 20,
-    }
-];
-
 export default function AdminProductsPage() {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +24,8 @@ export default function AdminProductsPage() {
             });
             setProducts(res.data);
         } catch (err) {
-            toast.error("Failed to load products");
+            console.error("Failed to load products:", err);
+            toast.error(err?.response?.data?.message || "Failed to load products");
         } finally {
             setIsLoading(false);
         }

@@ -36,7 +36,7 @@ export default function UserData() {
     return (
         <>
             {
-                user == null ? <div>
+                user == null ? <div className="lg:flex ">
                     <Link to="/login" className="text-white hidden lg:block hover:text-gray-500">Login</Link>
                     <span className="text-white hidden lg:block"> | </span>
                     <Link to="/register" className="text-white hidden lg:block hover:text-gray-500">Register</Link>
