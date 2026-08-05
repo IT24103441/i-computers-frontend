@@ -1,12 +1,49 @@
 import React from 'react';
-import { Link, Route, Routes, useLocation } from 'react-router-dom';
+import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { MdDashboard, MdShoppingBasket, MdPeople, MdLogout, MdInventory } from 'react-icons/md';
 import AdminProductsPage from './admin/adminProductsPage';
 import AdminAddProductForm from './admin/adminAddProductForm';
 import AdminEditProductForm from './admin/adminEditProductForm';
 import AdminOrdersPage from "./admin/adminOrdersPage";
+import api from '../utils/api';
+import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
+
 export default function AdminPage() {
     const location = useLocation();
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
+    useEffect(
+        () => {
+            const token = localStorage.getItem("token");
+
+            if (token != null) {
+
+                api.get("/users/me", {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                }).then((res) => {
+
+                    if (res.data.isAdmin) {
+                        setUser(res.data);
+                    } else {
+                        toast.error("You are not authorized to access this page");
+                        navigate("/");
+                    }
+
+                }).catch((err) => {
+                    console.log(err);
+                    setUser(null);
+                });
+
+            } else {
+                toast.error("You are not authorized to access this page");
+                navigate("/login");
+            }
+        }
+        , []
+    )
 
     const navItems = [
         {
@@ -76,10 +113,17 @@ export default function AdminPage() {
                 </nav>
 
                 <div className="p-6 border-t border-gray-100">
-                    <Link to="/login" className="flex items-center gap-4 p-4 text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 group">
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem("token");
+                            toast.success("Logged out successfully");
+                            navigate("/login");
+                        }}
+                        className="w-full flex items-center gap-4 p-4 text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 group"
+                    >
                         <MdLogout size={22} className="group-hover:translate-x-1 transition-transform" />
                         <span className="font-medium">Logout</span>
-                    </Link>
+                    </button>
                 </div>
             </aside>
 

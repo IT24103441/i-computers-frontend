@@ -44,22 +44,21 @@ export default function AdminAddProductForm() {
 
             const imageUrls = await Promise.all(imageUploadPromises);
 
-            const altNamesArray = altNames.split(",")
-
-            console.log(altNamesArray)
-
+            const altNamesArray = typeof altNames === "string"
+                ? altNames.split(",").map(s => s.trim()).filter(Boolean)
+                : (Array.isArray(altNames) ? altNames : []);
 
             const requestBody = {
                 productId: productId,
                 name: name,
                 altNames: altNamesArray,
                 description: description,
-                price: price,
-                labelledPrice: labelledPrice,
+                price: Number(price) || 0,
+                labelledPrice: Number(labelledPrice) || 0,
                 images: imageUrls,
-                isAvailable: isAvailable,
+                isAvailable: Boolean(isAvailable),
                 category: category,
-                stock: stock,
+                stock: Number(stock) || 0,
                 brand: brand,
                 model: model
             }
