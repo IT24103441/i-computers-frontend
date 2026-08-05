@@ -14,7 +14,15 @@ export default function MyOrders() {
     const [totalOrders, setTotalOrders] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
 
+    const [refreshKey, setRefreshKey] = useState(0);
+
+    const triggerRefresh = () => {
+        setLoading(true);
+        setRefreshKey((prev) => prev + 1);
+    };
+
     useEffect(() => {
+        let isSubscribed = true;
         const token = localStorage.getItem("token");
         api
             .get("/orders/" + pageNumber + "/" + pageSize, {
@@ -23,18 +31,29 @@ export default function MyOrders() {
                 },
             })
             .then((res) => {
-                console.log(res.data);
-                setOrders(res.data.orders || (Array.isArray(res.data) ? res.data : []));
-                setTotalOrders(res.data.totalOrders ?? (res.data.orders ? res.data.orders.length : 0));
-                setTotalPages(res.data.totalPages ?? 1);
-                setLoading(false);
+                if (isSubscribed) {
+                    console.log(res.data);
+                    setOrders(res.data.orders || (Array.isArray(res.data) ? res.data : []));
+                    setTotalOrders(res.data.totalOrders ?? (res.data.orders ? res.data.orders.length : 0));
+                    setTotalPages(res.data.totalPages ?? 1);
+                }
             })
             .catch((err) => {
-                console.error("Error fetching my orders:", err);
-                setOrders([]);
-                setLoading(false);
+                if (isSubscribed) {
+                    console.error("Error fetching my orders:", err);
+                    setOrders([]);
+                }
+            })
+            .finally(() => {
+                if (isSubscribed) {
+                    setLoading(false);
+                }
             });
-    }, [pageNumber, pageSize]);
+
+        return () => {
+            isSubscribed = false;
+        };
+    }, [pageNumber, pageSize, refreshKey]);
 
     return (
         <div className="w-full min-h-screen p-4 sm:p-8 max-w-6xl mx-auto flex flex-col items-center pb-28 lg:pb-12">
@@ -83,7 +102,7 @@ export default function MyOrders() {
                                         <td className="p-4 text-xs text-gray-500">{formatTimestamp(order.date)}</td>
                                         <td className="p-4 font-bold text-amber-600">{getFormattedPrice(order.totalAmount)}</td>
                                         <td className="p-4 text-center">
-                                            <AdminOrderDataModal isAdmin={false} order={order} refresh={() => setLoading(true)} />
+                                            <AdminOrderDataModal isAdmin={false} order={order} refresh={triggerRefresh} />
                                         </td>
                                     </tr>
                                 );

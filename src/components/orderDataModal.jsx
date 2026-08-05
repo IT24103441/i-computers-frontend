@@ -8,6 +8,7 @@ export default function AdminOrderDataModal(props) {
     const [isOpen, setIsOpen] = useState(false);
     const order = props.order;
     const refresh = props.refresh;
+    const [currentStatus, setCurrentStatus] = useState(order.status);
 
     function updateOrderStatus(newStatus) {
         const token = localStorage.getItem("token");
@@ -19,13 +20,16 @@ export default function AdminOrderDataModal(props) {
                 "Authorization": `Bearer ${token}`
             }
         }).then((res) => {
-            toast.success("Order status updated successfully")
-            console.log(res.data)
-            refresh()
+            toast.success("Order status updated successfully");
+            setCurrentStatus(newStatus);
+            console.log(res.data);
+            if (typeof refresh === 'function') {
+                refresh();
+            }
         }).catch((err) => {
-            console.log(err)
-            toast.error("Failed to update order status")
-        })
+            console.error("Failed to update order status:", err);
+            toast.error(err?.response?.data?.message || "Failed to update order status");
+        });
     }
 
     return (
@@ -52,8 +56,8 @@ export default function AdminOrderDataModal(props) {
                                 <p>Email: {order.email}</p>
                                 <p>Phone: {order.phone}</p>
                                 <p>Address: {order.addressLine1} {order.addressLine2} , {order.city}</p>
-                                <p>Status: {order.status}
-                                    {props.isAdmin && <select className="ml-4 border" defaultValue={order.status}
+                                <p>Status: <span className="font-semibold">{currentStatus}</span>
+                                    {props.isAdmin && <select className="ml-4 border rounded px-2 py-1 bg-white text-gray-800" value={currentStatus}
                                         onChange={
                                             (e) => {
                                                 updateOrderStatus(e.target.value)

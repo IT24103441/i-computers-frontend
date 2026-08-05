@@ -142,10 +142,10 @@ export default function RegisterPage() {
           </div>
           <button disabled={loading} className="w-full h-[50px] bg-accent mt-10 text-white rounded-lg" onClick={handleRegister}>
             {
-              loading ? "Loading..." : "Sign Up"
+              loading ? "Loading..." : "Register"
             }
           </button>
-          <p className="w-full h-2 text-white text-right italic ">Already have an account? click <Link to="/signin" className="font-bold text-accent">Here</Link> </p>
+          <p className="w-full h-2 text-white text-right italic ">Already have an account? click <Link to="/login" className="font-bold text-accent">Here</Link> </p>
           <button onClick={googleLogin} className="w-full h-[50px] bg-secondary mt-5 text-white rounded-lg flex justify-center items-center gap-2"><BsGoogle /> Sign In with Google</button>
         </div>
       </div>
