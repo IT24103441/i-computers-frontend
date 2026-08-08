@@ -2,7 +2,6 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
-import { clearCart } from "../utils/cart";
 
 export default function CreateOrder(props) {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -44,7 +43,6 @@ export default function CreateOrder(props) {
                 }
             })
             console.log(response.data)
-            clearCart()
             toast.success("Order placed successfully")
             setIsModalOpen(false)
             navigate("/")

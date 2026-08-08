@@ -24,31 +24,41 @@ export default function MyOrders() {
     useEffect(() => {
         let isSubscribed = true;
         const token = localStorage.getItem("token");
-        api
-            .get("/orders/" + pageNumber + "/" + pageSize, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-            .then((res) => {
+
+        const fetchMyOrders = async () => {
+            try {
+                const res = await api.get("/orders/my/" + pageNumber + "/" + pageSize, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 if (isSubscribed) {
-                    console.log(res.data);
                     setOrders(res.data.orders || (Array.isArray(res.data) ? res.data : []));
                     setTotalOrders(res.data.totalOrders ?? (res.data.orders ? res.data.orders.length : 0));
                     setTotalPages(res.data.totalPages ?? 1);
                 }
-            })
-            .catch((err) => {
-                if (isSubscribed) {
-                    console.error("Error fetching my orders:", err);
-                    setOrders([]);
+            } catch (err) {
+                try {
+                    const fallbackRes = await api.get("/orders/" + pageNumber + "/" + pageSize, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    if (isSubscribed) {
+                        setOrders(fallbackRes.data.orders || (Array.isArray(fallbackRes.data) ? fallbackRes.data : []));
+                        setTotalOrders(fallbackRes.data.totalOrders ?? (fallbackRes.data.orders ? fallbackRes.data.orders.length : 0));
+                        setTotalPages(fallbackRes.data.totalPages ?? 1);
+                    }
+                } catch (fallbackErr) {
+                    if (isSubscribed) {
+                        console.error("Error fetching my orders:", fallbackErr);
+                        setOrders([]);
+                    }
                 }
-            })
-            .finally(() => {
+            } finally {
                 if (isSubscribed) {
                     setLoading(false);
                 }
-            });
+            }
+        };
+
+        fetchMyOrders();
 
         return () => {
             isSubscribed = false;
