@@ -62,7 +62,7 @@ export default function RegisterPage() {
         lastName: lastName
       })
 
-      navigate("/signin")
+      navigate("/login")
 
     } catch (err) {
 

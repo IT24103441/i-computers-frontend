@@ -8,6 +8,7 @@ import AdminOrdersPage from "./admin/adminOrdersPage";
 import api from '../utils/api';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
+import AdminUsersPage from "./admin/adminUsersPage";
 
 export default function AdminPage() {
     const location = useLocation();
@@ -151,6 +152,7 @@ export default function AdminPage() {
                             ))}
                             <Route path="/products/add" element={<AdminAddProductForm />} />
                             <Route path="/products/edit/:productId" element={<AdminEditProductForm />} />
+                            <Route path="/users" element={<AdminUsersPage />} />
                         </Routes>
                     </div>
                 </main>

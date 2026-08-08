@@ -121,13 +121,20 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             value={email}
           />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          />
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+            <div className="text-right mt-2">
+              <Link to="/forget-password" className="text-sm text-white/80 hover:text-white font-medium hover:underline transition-colors">
+                Forgot password?
+              </Link>
+            </div>
+          </div>
         </div>
         <button disabled={loading} onClick={handleLogin} className="w-full py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors shadow-lg flex items-center justify-center">
           {
