@@ -9,6 +9,7 @@ import api from '../utils/api';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
 import AdminUsersPage from "./admin/adminUsersPage";
+import { clearCart } from '../utils/cart';
 
 export default function AdminPage() {
     const location = useLocation();

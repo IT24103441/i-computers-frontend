@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import { CiLogin } from "react-icons/ci";
+import { clearCart } from "../utils/cart";
 
 export default function UserData() {
 
