@@ -56,17 +56,7 @@ export default function AdminPage() {
             path: '/admin/users',
             name: 'Users',
             icon: <MdPeople size={22} />,
-            element: (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                        <h3 className="text-xl font-bold mb-4 text-gray-900">User Accounts</h3>
-                        <div className="h-64 border-2 border-dashed border-gray-100 rounded-2xl flex flex-col items-center justify-center text-gray-400 gap-2">
-                            <MdPeople size={48} className="opacity-20" />
-                            <p>User administration and role management.</p>
-                        </div>
-                    </div>
-                </div>
-            )
+            element: <AdminUsersPage />
         },
     ];
 
@@ -152,7 +142,6 @@ export default function AdminPage() {
                             ))}
                             <Route path="/products/add" element={<AdminAddProductForm />} />
                             <Route path="/products/edit/:productId" element={<AdminEditProductForm />} />
-                            <Route path="/users" element={<AdminUsersPage />} />
                         </Routes>
                     </div>
                 </main>
