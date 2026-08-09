@@ -73,8 +73,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="w-full h-full bg-green-600">
-      Register Page
+    <div className="w-full h-full">
       <div className="w-full h-full bg-[url('/login-bg.jpg')] bg-cover bg-no-repeat flex justify-center items-center">
 
         <div className="w-[400px]  backdrop-blur-md shadow-2xl shadow-white rounded-xl flex flex-col p-4">

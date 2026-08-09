@@ -3,7 +3,7 @@ import api from "../utils/api";
 import LoadingScreen from "../components/loadingScreen";
 import ProductCard from "../components/productCard";
 import getFormattedPrice from "../utils/price-formatter";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { BiSearch, BiX } from "react-icons/bi";
 
 export default function ProductsPage() {
@@ -16,6 +16,8 @@ export default function ProductsPage() {
     const [suggestions, setSuggestions] = useState([]);
     const searchContainerRef = useRef(null);
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const categoryParam = searchParams.get("category");
 
     useEffect(() => {
         if (loading) {
@@ -34,6 +36,23 @@ export default function ProductsPage() {
                 });
         }
     }, [loading]);
+
+    // Handle URL category query parameter filtering
+    useEffect(() => {
+        if (categoryParam && allProducts.length > 0) {
+            setQuery(categoryParam);
+            const catLower = categoryParam.toLowerCase();
+            const filtered = allProducts.filter((p) => {
+                const cat = p.category?.toLowerCase() || "";
+                const name = p.name?.toLowerCase() || "";
+                const desc = p.description?.toLowerCase() || "";
+                return cat.includes(catLower) || name.includes(catLower) || desc.includes(catLower);
+            });
+            setProducts(filtered);
+        } else if (!categoryParam && allProducts.length > 0 && !query) {
+            setProducts(allProducts);
+        }
+    }, [categoryParam, allProducts]);
 
     // Handle suggestions filtering when query changes
     useEffect(() => {

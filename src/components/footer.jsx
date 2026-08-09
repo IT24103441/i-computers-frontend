@@ -76,11 +76,31 @@ export default function Footer() {
             Popular Categories
           </h3>
           <ul className="space-y-2.5 text-sm text-gray-400">
-            <li className="hover:text-amber-400 transition-colors cursor-pointer">Electronics & Gadgets</li>
-            <li className="hover:text-amber-400 transition-colors cursor-pointer">Fashion & Accessories</li>
-            <li className="hover:text-amber-400 transition-colors cursor-pointer">Home & Living Essentials</li>
-            <li className="hover:text-amber-400 transition-colors cursor-pointer">Special Deals & Offers</li>
-            <li className="hover:text-amber-400 transition-colors cursor-pointer">New Arrivals</li>
+            <li>
+              <Link to="/products?category=Laptops" className="hover:text-amber-400 transition-colors">
+                Laptops
+              </Link>
+            </li>
+            <li>
+              <Link to="/products?category=Smartphones" className="hover:text-amber-400 transition-colors">
+                Smartphones
+              </Link>
+            </li>
+            <li>
+              <Link to="/products?category=Hard Drives" className="hover:text-amber-400 transition-colors">
+                Hard Drives
+              </Link>
+            </li>
+            <li>
+              <Link to="/products?category=Graphics Cards" className="hover:text-amber-400 transition-colors">
+                Graphics Cards
+              </Link>
+            </li>
+            <li>
+              <Link to="/products?category=Memory & RAM" className="hover:text-amber-400 transition-colors">
+                Memory & RAM
+              </Link>
+            </li>
           </ul>
         </div>
 
