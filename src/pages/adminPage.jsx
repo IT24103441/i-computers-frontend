@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { MdDashboard, MdShoppingBasket, MdPeople, MdLogout, MdInventory, MdRateReview } from 'react-icons/md';
+import { MdDashboard, MdShoppingBasket, MdPeople, MdLogout, MdInventory, MdRateReview, MdEmail } from 'react-icons/md';
 import AdminProductsPage from './admin/adminProductsPage';
 import AdminAddProductForm from './admin/adminAddProductForm';
 import AdminEditProductForm from './admin/adminEditProductForm';
 import AdminOrdersPage from "./admin/adminOrdersPage";
 import AdminReviewsPage from "./admin/adminReviewsPage";
+import AdminContactsPage from "./admin/adminContactsPage";
 import api from '../utils/api';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
@@ -66,7 +67,14 @@ export default function AdminPage() {
             icon: <MdRateReview size={22} />,
             element: <AdminReviewsPage />
         },
+        {
+            path: '/admin/messages',
+            name: 'Messages',
+            icon: <MdEmail size={22} />,
+            element: <AdminContactsPage />
+        },
     ];
+
 
 
     const getCurrentPageName = () => {

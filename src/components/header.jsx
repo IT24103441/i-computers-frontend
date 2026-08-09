@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { BiCart, BiStore } from "react-icons/bi";
 import UserData from "./userData";
+import NotificationBell from "./notificationBell";
 import { IoCartOutline, IoCubeOutline, IoHomeOutline, IoCallOutline } from "react-icons/io5";
 
 export default function Header() {
@@ -16,7 +17,7 @@ export default function Header() {
                 {/* Brand Logo */}
                 <Link to="/" className="flex items-center gap-2.5 group">
                     <div className="w-12 h-12 rounded-xl bg-amber-500 flex justify-center items-center text-slate-950 font-extrabold text-xl shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
-
+                        C
                     </div>
                     <span className="text-xl lg:text-2xl font-black tracking-tight text-white">
                         I-<span className="text-amber-500">computers</span>
@@ -55,7 +56,9 @@ export default function Header() {
                 </nav>
 
                 {/* Right Action Icons & User Data */}
-                <div className="hidden lg:flex items-center gap-4">
+                <div className="hidden lg:flex items-center gap-3">
+                    <NotificationBell />
+
                     <Link
                         to="/cart"
                         className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-gray-200 hover:text-amber-400 border border-slate-700/80 transition-all flex items-center justify-center relative shadow-sm"
@@ -96,6 +99,8 @@ export default function Header() {
                     <IoCartOutline className="text-2xl" />
                     <span className="text-[11px]">Cart</span>
                 </Link>
+
+                <NotificationBell />
 
                 <UserData />
             </div>
