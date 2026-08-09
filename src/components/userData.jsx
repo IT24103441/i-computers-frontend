@@ -2,77 +2,106 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import { CiLogin } from "react-icons/ci";
-import { clearCart } from "../utils/cart";
+import { BiUser, BiLogOut, BiShoppingBag, BiCog } from "react-icons/bi";
 
 export default function UserData() {
-
     const [user, setUser] = useState(null);
-
-    const [selectedOption, setSelectedOption] = useState("me");
-
     const navigate = useNavigate();
 
-    useEffect(
-        () => {
-            const token = localStorage.getItem("token");
-
-            if (token != null) {
-
-                api.get("/users/me", {
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                }).then((res) => {
-                    setUser(res.data);
-                }).catch((err) => {
-                    console.log(err);
-                    setUser(null);
-                });
-
-            }
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token != null) {
+            api.get("/users/me", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then((res) => {
+                setUser(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+                setUser(null);
+            });
         }
-        , []
-    )
+    }, []);
+
+    const handleSelectChange = (e) => {
+        const value = e.target.value;
+        if (value === "settings") navigate("/settings");
+        if (value === "my-orders") navigate("/my-orders");
+        if (value === "admin" && user?.isAdmin) navigate("/admin");
+        if (value === "logout") {
+            localStorage.removeItem("token");
+            setUser(null);
+            navigate("/");
+        }
+    };
+
+    if (user == null) {
+        return (
+            <div className="flex items-center gap-3">
+                <Link
+                    to="/login"
+                    className="px-4 py-2 text-xs font-semibold text-white hover:text-amber-400 transition-colors hidden lg:block"
+                >
+                    Login
+                </Link>
+                <Link
+                    to="/register"
+                    className="px-4 py-2 text-xs font-bold text-slate-950 bg-amber-500 hover:bg-amber-400 rounded-xl transition-all shadow-md hidden lg:block"
+                >
+                    Register
+                </Link>
+
+                {/* Mobile Login Button */}
+                <Link
+                    to="/login"
+                    className="lg:hidden flex flex-col justify-center items-center text-amber-500 text-2xl"
+                >
+                    <CiLogin />
+                    <span className="text-[11px] font-semibold text-amber-500">Login</span>
+                </Link>
+            </div>
+        );
+    }
 
     return (
-        <>
-            {
-                user == null ? <div className="lg:flex ">
-                    <Link to="/login" className="text-white hidden lg:block hover:text-gray-500">Login</Link>
-                    <span className="text-white hidden lg:block"> | </span>
-                    <Link to="/register" className="text-white hidden lg:block hover:text-gray-500">Register</Link>
-                    <Link to="/login" className="h-full lg:hidden flex flex-col  justify-center items-center text-accent text-3xl  ">
-                        <CiLogin />
-                        <span className="text-sm text-accent">Login</span>
-                    </Link>
-                </div> :
-                    <div className="text-white flex flex-col lg:flex-row justify-center items-center gap-2 lg:gap-4">
-                        <img src={user.image} className="w-6 h-6 rounded-full inline-block mr-2" />
-                        {/* <span className=" lg:hidden text-accent text-sm">{user.firstName}</span> */}
-                        <select className="bg-transparent  text-sm text-accent lg:text-white text-center" value={selectedOption} onChange={
-                            (e) => {
-                                setSelectedOption(e.target.value);
-                                if (e.target.value === "settings") {
-                                    navigate("/settings");
-                                }
-                                if (e.target.value === "my-orders") {
-                                    navigate("/my-orders");
-                                }
-                                if (e.target.value === "logout") {
-                                    localStorage.removeItem("token");
-                                    setUser(null);
-                                    navigate("/");
-                                }
-                                setSelectedOption("me");
-                            }
-                        }>
-                            <option value="me">{user.firstName}</option>
-                            <option className="bg-accent text-white" value="settings">Settings</option>
-                            <option className="bg-accent text-white" value="my-orders">My Orders</option>
-                            <option className="bg-accent text-white" value="logout">Logout</option>
-                        </select>
-                    </div>
-            }
-        </>
-    )
+        <div className="flex items-center gap-2 text-white">
+            <div className="flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 px-3 py-1.5 rounded-xl shadow-sm">
+                <img
+                    src={user.image || "/default-profile.png"}
+                    alt={user.firstName}
+                    className="w-7 h-7 rounded-full object-cover border border-amber-500/50 bg-slate-700"
+                    onError={(e) => {
+                        e.target.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.firstName || "User");
+                    }}
+                />
+                
+                <select
+                    onChange={handleSelectChange}
+                    defaultValue="default"
+                    className="bg-transparent text-xs font-bold text-amber-400 focus:outline-none cursor-pointer pr-1"
+                >
+                    <option value="default" disabled hidden>
+                        {user.firstName}
+                    </option>
+                    <option value="my-orders" className="bg-slate-900 text-white font-medium">
+                        📦 My Orders
+                    </option>
+                    <option value="settings" className="bg-slate-900 text-white font-medium">
+                        ⚙️ Settings
+                    </option>
+                    {user.isAdmin && (
+                        <option value="admin" className="bg-slate-900 text-amber-400 font-bold">
+                            👑 Admin Panel
+                        </option>
+                    )}
+                    <option value="logout" className="bg-slate-900 text-red-400 font-medium">
+                        🚪 Logout
+                    </option>
+                </select>
+            </div>
+        </div>
+    );
 }
