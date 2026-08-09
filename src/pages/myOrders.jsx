@@ -4,6 +4,7 @@ import LoadingScreen from "../components/loadingScreen";
 import getFormattedPrice from "../utils/price-formatter";
 import formatTimestamp from "../utils/date-formatter";
 import AdminOrderDataModal from "../components/orderDataModal";
+import toast from "react-hot-toast";
 
 
 export default function MyOrders() {
@@ -65,6 +66,23 @@ export default function MyOrders() {
         };
     }, [pageNumber, pageSize, refreshKey]);
 
+    const handleCancelOrder = (orderId) => {
+        if (!window.confirm(`Are you sure you want to cancel Order #${orderId}?`)) return;
+
+        const token = localStorage.getItem("token");
+        api.put("/orders/" + orderId + "/cancel", {}, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then((res) => {
+                toast.success(res.data.message || "Order cancelled successfully");
+                triggerRefresh();
+            })
+            .catch((err) => {
+                console.error("Failed to cancel order:", err);
+                toast.error(err.response?.data?.message || "Failed to cancel order");
+            });
+    };
+
     return (
         <div className="w-full min-h-screen p-4 sm:p-8 max-w-6xl mx-auto flex flex-col items-center pb-28 lg:pb-12">
             <div className="w-full bg-white shadow-sm border border-gray-100 mb-6 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -96,6 +114,7 @@ export default function MyOrders() {
                         </thead>
                         <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
                             {orders.map((order) => {
+                                const isCancellable = order.status === "Pending" || order.status === "Processing";
                                 return (
                                     <tr className="hover:bg-amber-50/40 transition-colors" key={order.orderId}>
                                         <td className="p-4 font-mono font-medium text-gray-900">{order.orderId}</td>
@@ -105,14 +124,26 @@ export default function MyOrders() {
                                         </td>
                                         <td className="p-4">{order.city}</td>
                                         <td className="p-4">
-                                            <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
+                                            <span
+                                                className={`px-2.5 py-1 text-xs font-semibold rounded-full capitalize ${order.status === "Delivered"
+                                                    ? "bg-emerald-100 text-emerald-800"
+                                                    : order.status === "Cancelled"
+                                                        ? "bg-red-100 text-red-800"
+                                                        : order.status === "Shipped"
+                                                            ? "bg-purple-100 text-purple-800"
+                                                            : "bg-amber-100 text-amber-800"
+                                                    }`}
+                                            >
                                                 {order.status}
                                             </span>
                                         </td>
                                         <td className="p-4 text-xs text-gray-500">{formatTimestamp(order.date)}</td>
                                         <td className="p-4 font-bold text-amber-600">{getFormattedPrice(order.totalAmount)}</td>
                                         <td className="p-4 text-center">
-                                            <AdminOrderDataModal isAdmin={false} order={order} refresh={triggerRefresh} />
+                                            <div className="flex items-center justify-center gap-2">
+                                                <AdminOrderDataModal isAdmin={false} order={order} refresh={triggerRefresh} />
+
+                                            </div>
                                         </td>
                                     </tr>
                                 );

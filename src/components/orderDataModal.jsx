@@ -35,6 +35,30 @@ export default function AdminOrderDataModal(props) {
         });
     }
 
+    function handleUserCancelOrder() {
+        if (!window.confirm(`Are you sure you want to cancel Order #${order.orderId}?`)) return;
+
+        const token = localStorage.getItem("token");
+        setUpdating(true);
+
+        api.put("/orders/" + order.orderId + "/cancel", {}, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }).then((res) => {
+            toast.success(res.data.message || "Order cancelled successfully");
+            setCurrentStatus("Cancelled");
+            setUpdating(false);
+            if (typeof refresh === 'function') {
+                refresh();
+            }
+        }).catch((err) => {
+            console.error("Failed to cancel order:", err);
+            toast.error(err?.response?.data?.message || "Failed to cancel order");
+            setUpdating(false);
+        });
+    }
+
     const items = order?.items || order?.orderedItems || [];
 
     return (
@@ -108,22 +132,28 @@ export default function AdminOrderDataModal(props) {
                                         {order.city}
                                     </p>
 
-                                    {/* Admin Change Status Dropdown */}
+                                     {/* Admin Change Status Dropdown */}
                                     {props.isAdmin && (
                                         <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between">
                                             <span className="text-[11px] font-bold text-slate-600">Update Status:</span>
-                                            <select
-                                                disabled={updating}
-                                                value={currentStatus}
-                                                onChange={(e) => updateOrderStatus(e.target.value)}
-                                                className="px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-slate-900 border border-slate-300 outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer"
-                                            >
-                                                <option value="Pending">Pending</option>
-                                                <option value="Processing">Processing</option>
-                                                <option value="Shipped">Shipped</option>
-                                                <option value="Delivered">Delivered</option>
-                                                <option value="Cancelled">Cancelled</option>
-                                            </select>
+                                            {currentStatus === "Cancelled" ? (
+                                                <span className="text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-xl">
+                                                    Order Cancelled
+                                                </span>
+                                            ) : (
+                                                <select
+                                                    disabled={updating}
+                                                    value={currentStatus}
+                                                    onChange={(e) => updateOrderStatus(e.target.value)}
+                                                    className="px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-slate-900 border border-slate-300 outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer"
+                                                >
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Processing">Processing</option>
+                                                    <option value="Shipped">Shipped</option>
+                                                    <option value="Delivered">Delivered</option>
+                                                    <option value="Cancelled">Cancelled</option>
+                                                </select>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -200,18 +230,30 @@ export default function AdminOrderDataModal(props) {
                         </div>
 
                         {/* Modal Footer */}
-                        <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+                        <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-4">
                             <div>
                                 <span className="text-xs text-slate-500 font-semibold block">Total Amount Paid</span>
                                 <span className="text-xl font-black text-amber-600">{getFormattedPrice(order.totalAmount)}</span>
                             </div>
 
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md transition-colors"
-                            >
-                                Close Window
-                            </button>
+                            <div className="flex items-center gap-3">
+                                {!props.isAdmin && (currentStatus === "Pending" || currentStatus === "Processing") && (
+                                    <button
+                                        disabled={updating}
+                                        onClick={handleUserCancelOrder}
+                                        className="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl border border-red-200 transition-colors shadow-sm disabled:opacity-50"
+                                    >
+                                        {updating ? "Cancelling..." : "Cancel Order"}
+                                    </button>
+                                )}
+
+                                <button
+                                    onClick={() => setIsOpen(false)}
+                                    className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md transition-colors"
+                                >
+                                    Close Window
+                                </button>
+                            </div>
                         </div>
 
                     </div>

@@ -146,19 +146,22 @@ export default function AdminOrdersPage() {
                                                 <p className="text-[11px] text-gray-400 font-mono">{order.phone}</p>
                                             </td>
 
-                                            {/* Status Dropdown */}
+                                             {/* Status Dropdown */}
                                             <td className="p-4">
                                                 <select
+                                                    disabled={order.status === "Cancelled"}
                                                     value={order.status}
                                                     onChange={(e) => handleUpdateStatusRow(order.orderId, e.target.value)}
-                                                    className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border outline-none cursor-pointer transition-all ${
-                                                        order.status === "Delivered"
-                                                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                                                    className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border outline-none transition-all ${
+                                                        order.status === "Cancelled"
+                                                            ? "bg-red-50 text-red-700 border-red-200 cursor-not-allowed opacity-80"
+                                                            : order.status === "Delivered"
+                                                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 cursor-pointer"
                                                             : order.status === "Shipped"
-                                                            ? "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100"
+                                                            ? "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100 cursor-pointer"
                                                             : order.status === "Processing"
-                                                            ? "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
-                                                            : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                                                            ? "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 cursor-pointer"
+                                                            : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 cursor-pointer"
                                                     }`}
                                                 >
                                                     <option value="Pending" className="bg-white text-gray-800">Pending</option>
