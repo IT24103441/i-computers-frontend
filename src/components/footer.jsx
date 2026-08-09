@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="w-full bg-slate-900 text-gray-300 pt-12 pb-24 lg:pb-12 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        
+
         {/* Brand Info */}
         <div className="space-y-4">
           <div className="flex items-center gap-2">
@@ -14,7 +14,7 @@ export default function Footer() {
               C
             </div>
             <span className="text-2xl font-bold text-white tracking-tight">
-              Cours<span className="text-amber-500">Store</span>
+              I-<span className="text-amber-500">computers</span>
             </span>
           </div>
           <p className="text-sm text-gray-400 leading-relaxed">

@@ -44,16 +44,24 @@ export default function NotificationBell() {
   if (!token) return null;
 
   const repliedMessages = messages.filter((m) => m.status === "replied");
-  const unreadBadge = repliedMessages.length;
+  const seenCount = Number(localStorage.getItem("seen_notifications_count") || 0);
+  const unreadBadge = Math.max(0, repliedMessages.length - seenCount);
+
+  const handleToggleOpen = () => {
+    const nextState = !isOpen;
+    setIsOpen(nextState);
+    if (nextState) {
+      // Mark current replied notifications as seen in localStorage
+      localStorage.setItem("seen_notifications_count", repliedMessages.length.toString());
+      fetchUserNotifications();
+    }
+  };
 
   return (
     <div ref={dropdownRef} className="relative inline-block">
       {/* Bell Icon Button */}
       <button
-        onClick={() => {
-          setIsOpen((prev) => !prev);
-          if (!isOpen) fetchUserNotifications();
-        }}
+        onClick={handleToggleOpen}
         className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-gray-200 hover:text-amber-400 border border-slate-700/80 transition-all flex items-center justify-center relative shadow-sm"
         title="Notifications & Support Replies"
       >
@@ -67,23 +75,24 @@ export default function NotificationBell() {
         )}
       </button>
 
-      {/* Notifications Dropdown Panel */}
+      {/* Notifications Dropdown / Mobile Modal Panel */}
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-white text-slate-900 rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 animate-in fade-in zoom-in duration-200">
-          
-          {/* Panel Header */}
-          <div className="p-4 bg-slate-900 text-white flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <BiMessageCheck className="text-amber-400 text-xl" />
-              <h4 className="font-bold text-sm">Notifications & Admin Replies</h4>
+        <div className="fixed inset-0 sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-3 z-50 bg-slate-900/60 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none flex items-center justify-center p-4 sm:p-0">
+          <div className="w-full max-w-sm sm:w-96 bg-white text-slate-900 rounded-3xl sm:rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in duration-200">
+            
+            {/* Panel Header */}
+            <div className="p-4 bg-slate-900 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <BiMessageCheck className="text-amber-400 text-xl" />
+                <h4 className="font-bold text-xs sm:text-sm">Notifications & Admin Replies</h4>
+              </div>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800"
+              >
+                <BiX size={20} />
+              </button>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="text-slate-400 hover:text-white transition-colors"
-            >
-              <BiX size={20} />
-            </button>
-          </div>
 
           {/* Messages Body */}
           <div className="max-h-96 overflow-y-auto divide-y divide-slate-100 p-2">
@@ -151,6 +160,7 @@ export default function NotificationBell() {
             )}
           </div>
         </div>
+      </div>
       )}
     </div>
   );
