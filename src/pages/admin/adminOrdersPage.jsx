@@ -5,7 +5,7 @@ import getFormattedPrice from "../../utils/price-formatter";
 import formatTimestamp from "../../utils/date-formatter";
 import AdminOrderDataModal from "../../components/orderDataModal";
 import toast from "react-hot-toast";
-import { BiShoppingBag, BiRefresh, BiTrash } from "react-icons/bi";
+import { BiShoppingBag, BiRefresh, BiTrash, BiSearch } from "react-icons/bi";
 
 export default function AdminOrdersPage() {
     const [orders, setOrders] = useState([]);
@@ -16,6 +16,7 @@ export default function AdminOrdersPage() {
     const [totalPages, setTotalPages] = useState(1);
     const [refreshKey, setRefreshKey] = useState(0);
     const [activeFilter, setActiveFilter] = useState("all");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const triggerRefresh = () => {
         setLoading(true);
@@ -90,7 +91,18 @@ export default function AdminOrdersPage() {
             });
     };
 
-    const filteredOrders = activeFilter === "all" ? orders : orders.filter((o) => o.status === activeFilter);
+    const filteredOrders = orders.filter((o) => {
+        const matchesFilter = activeFilter === "all" || o.status === activeFilter;
+        const q = searchQuery.toLowerCase().trim();
+        const matchesSearch = !q ||
+            o.orderId.toLowerCase().includes(q) ||
+            `${o.firstName} ${o.lastName}`.toLowerCase().includes(q) ||
+            o.email.toLowerCase().includes(q) ||
+            (o.phone && o.phone.toLowerCase().includes(q)) ||
+            (o.city && o.city.toLowerCase().includes(q));
+        return matchesFilter && matchesSearch;
+    });
+
     const pendingCount = orders.filter((o) => o.status === "Pending").length;
     const processingCount = orders.filter((o) => o.status === "Processing").length;
     const shippedCount = orders.filter((o) => o.status === "Shipped").length;
@@ -110,8 +122,18 @@ export default function AdminOrdersPage() {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <span className="bg-amber-50 text-amber-700 font-bold px-4 py-2 rounded-xl text-xs border border-amber-200">
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="relative w-full sm:w-64">
+                        <BiSearch size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Search Order ID, name, email..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all"
+                        />
+                    </div>
+                    <span className="bg-amber-50 text-amber-700 font-bold px-4 py-2 rounded-xl text-xs border border-amber-200 whitespace-nowrap">
                         Total Orders: {totalOrders}
                     </span>
                     <button

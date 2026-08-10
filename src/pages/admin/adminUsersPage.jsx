@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import LoadingScreen from "../../components/loadingScreen";
-import { BiRefresh } from "react-icons/bi";
+import { BiRefresh, BiSearch } from "react-icons/bi";
 import toast from "react-hot-toast";
 
 export default function AdminUsersPage() {
@@ -12,6 +12,7 @@ export default function AdminUsersPage() {
     const [totalUsers, setTotalUsers] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [activeFilter, setActiveFilter] = useState("all");
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         if (loading) {
@@ -70,11 +71,20 @@ export default function AdminUsersPage() {
         });
     }
 
-    const filteredUsers = activeFilter === "all" 
-        ? users 
-        : activeFilter === "Admin" 
-            ? users.filter((u) => u.isAdmin) 
-            : users.filter((u) => !u.isAdmin);
+    const filteredUsers = users.filter((u) => {
+        const matchesFilter = activeFilter === "all" 
+            ? true 
+            : activeFilter === "Admin" 
+                ? u.isAdmin 
+                : !u.isAdmin;
+        const q = searchQuery.toLowerCase().trim();
+        const matchesSearch = !q ||
+            u.email.toLowerCase().includes(q) ||
+            `${u.firstName} ${u.lastName}`.toLowerCase().includes(q) ||
+            (u.firstName && u.firstName.toLowerCase().includes(q)) ||
+            (u.lastName && u.lastName.toLowerCase().includes(q));
+        return matchesFilter && matchesSearch;
+    });
 
     const adminCount = users.filter((u) => u.isAdmin).length;
     const customerCount = users.filter((u) => !u.isAdmin).length;
@@ -85,13 +95,23 @@ export default function AdminUsersPage() {
         <div className="w-full flex flex-col items-center pb-20">
             <div className="w-full bg-white shadow-sm border border-gray-100 mb-6 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <h1 className="text-2xl font-bold text-gray-900">All Users</h1>
-                <div className="flex items-center gap-3">
-                    <span className="bg-amber-50 text-amber-700 font-semibold px-4 py-1.5 rounded-full text-sm">
+                <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                    <div className="relative flex-1 sm:w-64">
+                        <BiSearch size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Search name or email..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all"
+                        />
+                    </div>
+                    <span className="bg-amber-50 text-amber-700 font-semibold px-4 py-2 rounded-xl text-xs border border-amber-200 whitespace-nowrap">
                         {totalUsers} Total Users
                     </span>
                     <button
                         onClick={() => setLoading(true)}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-xs transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-xs transition-colors"
                     >
                         <BiRefresh size={18} /> Refresh
                     </button>

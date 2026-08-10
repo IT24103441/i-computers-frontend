@@ -5,7 +5,7 @@ import getFormattedPrice from "../utils/price-formatter";
 import formatTimestamp from "../utils/date-formatter";
 import AdminOrderDataModal from "../components/orderDataModal";
 import toast from "react-hot-toast";
-import { BiTrash, BiXCircle } from "react-icons/bi";
+import { BiTrash, BiXCircle, BiSearch } from "react-icons/bi";
 
 
 export default function MyOrders() {
@@ -16,6 +16,7 @@ export default function MyOrders() {
     const [totalOrders, setTotalOrders] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [activeFilter, setActiveFilter] = useState("all");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -102,7 +103,17 @@ export default function MyOrders() {
             });
     };
 
-    const filteredOrders = activeFilter === "all" ? orders : orders.filter((o) => o.status === activeFilter);
+    const filteredOrders = orders.filter((o) => {
+        const matchesFilter = activeFilter === "all" || o.status === activeFilter;
+        const q = searchQuery.toLowerCase().trim();
+        const matchesSearch = !q ||
+            o.orderId.toLowerCase().includes(q) ||
+            `${o.firstName} ${o.lastName}`.toLowerCase().includes(q) ||
+            o.email.toLowerCase().includes(q) ||
+            (o.city && o.city.toLowerCase().includes(q));
+        return matchesFilter && matchesSearch;
+    });
+
     const pendingCount = orders.filter((o) => o.status === "Pending").length;
     const processingCount = orders.filter((o) => o.status === "Processing").length;
     const shippedCount = orders.filter((o) => o.status === "Shipped").length;
@@ -113,8 +124,20 @@ export default function MyOrders() {
         <div className="w-full min-h-screen p-4 sm:p-8 max-w-6xl mx-auto flex flex-col items-center pb-28 lg:pb-12">
             <div className="w-full bg-white shadow-sm border border-gray-100 mb-6 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <h1 className="text-2xl font-bold text-gray-900">My Orders</h1>
-                <div className="bg-amber-50 text-amber-700 font-semibold px-4 py-1.5 rounded-full text-sm">
-                    {totalOrders} Total Orders
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                    <div className="relative flex-1 sm:w-64">
+                        <BiSearch size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Search order ID, city..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all"
+                        />
+                    </div>
+                    <div className="bg-amber-50 text-amber-700 font-semibold px-4 py-2 rounded-xl text-xs border border-amber-200 whitespace-nowrap">
+                        {totalOrders} Orders
+                    </div>
                 </div>
             </div>
 
