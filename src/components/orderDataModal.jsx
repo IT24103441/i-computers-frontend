@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BiShow, BiX, BiUser, BiPhone, BiEnvelope, BiMap, BiPackage, BiCheckCircle } from "react-icons/bi";
+import { BiShow, BiX, BiUser, BiPhone, BiEnvelope, BiMap, BiPackage, BiCheckCircle, BiTrash } from "react-icons/bi";
 import getFormattedPrice from "../utils/price-formatter";
 import api from "../utils/api";
 import toast from "react-hot-toast";
@@ -55,6 +55,30 @@ export default function AdminOrderDataModal(props) {
         }).catch((err) => {
             console.error("Failed to cancel order:", err);
             toast.error(err?.response?.data?.message || "Failed to cancel order");
+            setUpdating(false);
+        });
+    }
+
+    function handleDeleteOrder() {
+        if (!window.confirm(`Are you sure you want to delete Order #${order.orderId}?`)) return;
+
+        const token = localStorage.getItem("token");
+        setUpdating(true);
+
+        api.delete("/orders/" + order.orderId, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }).then((res) => {
+            toast.success(res.data.message || "Order deleted successfully");
+            setUpdating(false);
+            setIsOpen(false);
+            if (typeof refresh === 'function') {
+                refresh();
+            }
+        }).catch((err) => {
+            console.error("Failed to delete order:", err);
+            toast.error(err?.response?.data?.message || "Failed to delete order");
             setUpdating(false);
         });
     }
@@ -244,6 +268,16 @@ export default function AdminOrderDataModal(props) {
                                         className="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl border border-red-200 transition-colors shadow-sm disabled:opacity-50"
                                     >
                                         {updating ? "Cancelling..." : "Cancel Order"}
+                                    </button>
+                                )}
+
+                                {currentStatus === "Cancelled" && (
+                                    <button
+                                        disabled={updating}
+                                        onClick={handleDeleteOrder}
+                                        className="inline-flex items-center gap-1 px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs rounded-xl border border-red-200 transition-colors shadow-sm disabled:opacity-50"
+                                    >
+                                        <BiTrash size={16} /> {updating ? "Deleting..." : "Delete Order"}
                                     </button>
                                 )}
 

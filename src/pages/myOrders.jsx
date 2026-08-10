@@ -5,6 +5,7 @@ import getFormattedPrice from "../utils/price-formatter";
 import formatTimestamp from "../utils/date-formatter";
 import AdminOrderDataModal from "../components/orderDataModal";
 import toast from "react-hot-toast";
+import { BiTrash, BiXCircle } from "react-icons/bi";
 
 
 export default function MyOrders() {
@@ -83,6 +84,23 @@ export default function MyOrders() {
             });
     };
 
+    const handleDeleteOrder = (orderId) => {
+        if (!window.confirm(`Are you sure you want to delete Order #${orderId}?`)) return;
+
+        const token = localStorage.getItem("token");
+        api.delete("/orders/" + orderId, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then((res) => {
+                toast.success(res.data.message || "Order deleted successfully");
+                triggerRefresh();
+            })
+            .catch((err) => {
+                console.error("Failed to delete order:", err);
+                toast.error(err.response?.data?.message || "Failed to delete order");
+            });
+    };
+
     return (
         <div className="w-full min-h-screen p-4 sm:p-8 max-w-6xl mx-auto flex flex-col items-center pb-28 lg:pb-12">
             <div className="w-full bg-white shadow-sm border border-gray-100 mb-6 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -115,6 +133,7 @@ export default function MyOrders() {
                         <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
                             {orders.map((order) => {
                                 const isCancellable = order.status === "Pending" || order.status === "Processing";
+                                const isCancelled = order.status === "Cancelled";
                                 return (
                                     <tr className="hover:bg-amber-50/40 transition-colors" key={order.orderId}>
                                         <td className="p-4 font-mono font-medium text-gray-900">{order.orderId}</td>
@@ -142,7 +161,6 @@ export default function MyOrders() {
                                         <td className="p-4 text-center">
                                             <div className="flex items-center justify-center gap-2">
                                                 <AdminOrderDataModal isAdmin={false} order={order} refresh={triggerRefresh} />
-
                                             </div>
                                         </td>
                                     </tr>

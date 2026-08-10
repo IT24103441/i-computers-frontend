@@ -5,7 +5,7 @@ import getFormattedPrice from "../../utils/price-formatter";
 import formatTimestamp from "../../utils/date-formatter";
 import AdminOrderDataModal from "../../components/orderDataModal";
 import toast from "react-hot-toast";
-import { BiShoppingBag, BiRefresh } from "react-icons/bi";
+import { BiShoppingBag, BiRefresh, BiTrash } from "react-icons/bi";
 
 export default function AdminOrdersPage() {
     const [orders, setOrders] = useState([]);
@@ -15,6 +15,7 @@ export default function AdminOrdersPage() {
     const [totalOrders, setTotalOrders] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [refreshKey, setRefreshKey] = useState(0);
+    const [activeFilter, setActiveFilter] = useState("all");
 
     const triggerRefresh = () => {
         setLoading(true);
@@ -60,17 +61,41 @@ export default function AdminOrdersPage() {
         api.put("/orders/" + orderId, { status: newStatus }, {
             headers: { Authorization: `Bearer ${token}` }
         })
-        .then(() => {
-            toast.success(`Order #${orderId} status set to ${newStatus}`);
-            setOrders((prev) =>
-                prev.map((o) => (o.orderId === orderId ? { ...o, status: newStatus } : o))
-            );
-        })
-        .catch((err) => {
-            console.error("Failed to update status:", err);
-            toast.error("Failed to update status");
-        });
+            .then(() => {
+                toast.success(`Order #${orderId} status set to ${newStatus}`);
+                setOrders((prev) =>
+                    prev.map((o) => (o.orderId === orderId ? { ...o, status: newStatus } : o))
+                );
+            })
+            .catch((err) => {
+                console.error("Failed to update status:", err);
+                toast.error("Failed to update status");
+            });
     };
+
+    const handleDeleteOrder = (orderId) => {
+        if (!window.confirm(`Are you sure you want to delete Order #${orderId}?`)) return;
+
+        const token = localStorage.getItem("token");
+        api.delete("/orders/" + orderId, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then((res) => {
+                toast.success(res.data.message || "Order deleted successfully");
+                triggerRefresh();
+            })
+            .catch((err) => {
+                console.error("Failed to delete order:", err);
+                toast.error(err.response?.data?.message || "Failed to delete order");
+            });
+    };
+
+    const filteredOrders = activeFilter === "all" ? orders : orders.filter((o) => o.status === activeFilter);
+    const pendingCount = orders.filter((o) => o.status === "Pending").length;
+    const processingCount = orders.filter((o) => o.status === "Processing").length;
+    const shippedCount = orders.filter((o) => o.status === "Shipped").length;
+    const deliveredCount = orders.filter((o) => o.status === "Delivered").length;
+    const cancelledCount = orders.filter((o) => o.status === "Cancelled").length;
 
     return (
         <div className="w-full space-y-6">
@@ -98,17 +123,57 @@ export default function AdminOrdersPage() {
                 </div>
             </div>
 
+            {/* Filter Tabs & Stats Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-2 bg-white p-1.5 rounded-2xl border border-gray-200 shadow-sm">
+                    {["all", "Pending", "Processing", "Shipped", "Delivered", "Cancelled"].map((tab) => (
+                        <button
+                            key={tab}
+                            onClick={() => setActiveFilter(tab)}
+                            className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${
+                                activeFilter === tab
+                                    ? "bg-amber-600 text-white shadow-md"
+                                    : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                        >
+                            {tab}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
+                    <span className="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
+                        Total: <strong>{orders.length}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-yellow-50 text-yellow-700 border border-yellow-200">
+                        Pending: <strong>{pendingCount}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200">
+                        Processing: <strong>{processingCount}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 border border-purple-200">
+                        Shipped: <strong>{shippedCount}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Delivered: <strong>{deliveredCount}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-red-50 text-red-700 border border-red-200">
+                        Cancelled: <strong>{cancelledCount}</strong>
+                    </span>
+                </div>
+            </div>
+
             {loading && (
                 <div className="w-full py-16 flex justify-center items-center">
                     <LoadingScreen />
                 </div>
             )}
 
-            {!loading && orders.length === 0 ? (
+            {!loading && filteredOrders.length === 0 ? (
                 <div className="w-full bg-white rounded-2xl p-12 text-center border border-gray-100 shadow-sm space-y-2">
                     <BiShoppingBag size={48} className="mx-auto text-gray-300" />
                     <h3 className="text-base font-bold text-gray-700">No orders found</h3>
-                    <p className="text-xs text-gray-400">There are currently no customer orders in the system.</p>
+                    <p className="text-xs text-gray-400">There are no orders matching the selected filter ({activeFilter}).</p>
                 </div>
             ) : (
                 <div className="w-full bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -126,7 +191,7 @@ export default function AdminOrdersPage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
-                                {orders.map((order) => {
+                                {filteredOrders.map((order) => {
                                     return (
                                         <tr className="hover:bg-gray-50/50 transition-colors" key={order.orderId}>
                                             {/* Order ID */}
@@ -146,23 +211,22 @@ export default function AdminOrdersPage() {
                                                 <p className="text-[11px] text-gray-400 font-mono">{order.phone}</p>
                                             </td>
 
-                                             {/* Status Dropdown */}
+                                            {/* Status Dropdown */}
                                             <td className="p-4">
                                                 <select
                                                     disabled={order.status === "Cancelled"}
                                                     value={order.status}
                                                     onChange={(e) => handleUpdateStatusRow(order.orderId, e.target.value)}
-                                                    className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border outline-none transition-all ${
-                                                        order.status === "Cancelled"
+                                                    className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border outline-none transition-all ${order.status === "Cancelled"
                                                             ? "bg-red-50 text-red-700 border-red-200 cursor-not-allowed opacity-80"
                                                             : order.status === "Delivered"
-                                                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 cursor-pointer"
-                                                            : order.status === "Shipped"
-                                                            ? "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100 cursor-pointer"
-                                                            : order.status === "Processing"
-                                                            ? "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 cursor-pointer"
-                                                            : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 cursor-pointer"
-                                                    }`}
+                                                                ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 cursor-pointer"
+                                                                : order.status === "Shipped"
+                                                                    ? "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100 cursor-pointer"
+                                                                    : order.status === "Processing"
+                                                                        ? "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 cursor-pointer"
+                                                                        : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 cursor-pointer"
+                                                        }`}
                                                 >
                                                     <option value="Pending" className="bg-white text-gray-800">Pending</option>
                                                     <option value="Processing" className="bg-white text-gray-800">Processing</option>
@@ -190,8 +254,9 @@ export default function AdminOrdersPage() {
 
                                             {/* Actions */}
                                             <td className="p-4 text-center">
-                                                <div className="flex justify-center items-center">
+                                                <div className="flex justify-center items-center gap-2">
                                                     <AdminOrderDataModal isAdmin={true} order={order} refresh={triggerRefresh} />
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -202,6 +267,42 @@ export default function AdminOrdersPage() {
                     </div>
                 </div>
             )}
+
+            {/* Pagination Controls */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                <select
+                    value={pageSize}
+                    onChange={(e) => { setPageSize(Number(e.target.value)); setLoading(true); }}
+                    className="px-3 py-1.5 border border-gray-200 rounded-xl text-xs font-semibold bg-gray-50 text-gray-700 focus:outline-none cursor-pointer"
+                >
+                    <option value={5}>5 per page</option>
+                    <option value={10}>10 per page</option>
+                    <option value={20}>20 per page</option>
+                </select>
+
+                <div className="flex items-center gap-3">
+                    <button
+                        disabled={pageNumber === 1}
+                        onClick={() => { setPageNumber(pageNumber - 1); setLoading(true); }}
+                        className="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                        Previous
+                    </button>
+                    <span className="text-xs text-gray-600 font-semibold">
+                        Page {pageNumber} of {totalPages}
+                    </span>
+                    <button
+                        disabled={pageNumber === totalPages}
+                        onClick={() => { setPageNumber(pageNumber + 1); setLoading(true); }}
+                        className="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
 
             {/* Pagination Controls */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
