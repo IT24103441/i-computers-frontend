@@ -11,6 +11,7 @@ export default function AdminUsersPage() {
     const [pageSize, setPageSize] = useState(10);
     const [totalUsers, setTotalUsers] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
+    const [activeFilter, setActiveFilter] = useState("all");
 
     useEffect(() => {
         if (loading) {
@@ -69,20 +70,76 @@ export default function AdminUsersPage() {
         });
     }
 
+    const filteredUsers = activeFilter === "all" 
+        ? users 
+        : activeFilter === "Admin" 
+            ? users.filter((u) => u.isAdmin) 
+            : users.filter((u) => !u.isAdmin);
+
+    const adminCount = users.filter((u) => u.isAdmin).length;
+    const customerCount = users.filter((u) => !u.isAdmin).length;
+    const activeCount = users.filter((u) => !u.isBlocked).length;
+    const blockedCount = users.filter((u) => u.isBlocked).length;
+
     return (
         <div className="w-full flex flex-col items-center pb-20">
             <div className="w-full bg-white shadow-sm border border-gray-100 mb-6 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <h1 className="text-2xl font-bold text-gray-900">All Users</h1>
-                <div className="bg-amber-50 text-amber-700 font-semibold px-4 py-1.5 rounded-full text-sm">
-                    {totalUsers} Users
+                <div className="flex items-center gap-3">
+                    <span className="bg-amber-50 text-amber-700 font-semibold px-4 py-1.5 rounded-full text-sm">
+                        {totalUsers} Total Users
+                    </span>
+                    <button
+                        onClick={() => setLoading(true)}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-xs transition-colors"
+                    >
+                        <BiRefresh size={18} /> Refresh
+                    </button>
+                </div>
+            </div>
+
+            {/* Filter Tabs & Stats Bar */}
+            <div className="w-full flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div className="flex flex-wrap items-center gap-2 bg-white p-1.5 rounded-2xl border border-gray-200 shadow-sm">
+                    {["all", "Admin", "Customer"].map((tab) => (
+                        <button
+                            key={tab}
+                            onClick={() => setActiveFilter(tab)}
+                            className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${
+                                activeFilter === tab
+                                    ? "bg-amber-600 text-white shadow-md"
+                                    : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                        >
+                            {tab}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
+                    <span className="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
+                        Total: <strong>{users.length}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 border border-purple-200">
+                        Admin: <strong>{adminCount}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200">
+                        Customer: <strong>{customerCount}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Active: <strong>{activeCount}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-red-50 text-red-700 border border-red-200">
+                        Blocked: <strong>{blockedCount}</strong>
+                    </span>
                 </div>
             </div>
 
             {loading && <LoadingScreen />}
 
-            {!loading && users.length === 0 ? (
+            {!loading && filteredUsers.length === 0 ? (
                 <div className="w-full bg-white rounded-2xl p-12 text-center border border-gray-100 shadow-sm">
-                    <p className="text-gray-500 text-lg">No users found.</p>
+                    <p className="text-gray-500 text-lg">No users found matching the filter ({activeFilter}).</p>
                 </div>
             ) : (
                 <div className="w-full overflow-x-auto bg-white rounded-2xl shadow-sm border border-gray-100 mb-6">
@@ -99,7 +156,7 @@ export default function AdminUsersPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
-                            {users.map((user) => {
+                            {filteredUsers.map((user) => {
                                 return (
                                     <tr className="hover:bg-amber-50/40 transition-colors" key={user.email}>
                                         <td className="p-4">
