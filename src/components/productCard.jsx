@@ -5,20 +5,26 @@ export default function ProductCard({ product }) {
     if (!product) return null;
 
     const available = product.isAvailable === true || product.isAvailable === "true";
+    const isOutOfStock = !available || product.stock === 0;
+    const isLowStock = available && product.stock > 0 && product.stock <= 5;
 
     return (
-        <div className={`border w-64 rounded-xl shadow-md p-4 bg-white flex flex-col justify-between transition-all hover:shadow-lg ${!available ? "opacity-80" : ""}`}>
+        <div className={`border w-64 rounded-xl shadow-md p-4 bg-white flex flex-col justify-between transition-all hover:shadow-lg ${isOutOfStock ? "opacity-80" : ""}`}>
             <div className="w-full h-48 bg-gray-100 rounded-lg overflow-hidden mb-3 relative flex justify-center items-center">
                 {product.images?.[0] ? (
-                    <img src={product.images[0]} alt={product.name} className={`w-full h-full object-cover ${!available ? "grayscale" : ""}`} />
+                    <img src={product.images[0]} alt={product.name} className={`w-full h-full object-cover ${isOutOfStock ? "grayscale" : ""}`} />
                 ) : (
                     <span className="text-gray-400 text-sm">No Image</span>
                 )}
-                {!available && (
-                    <span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">
+                {isOutOfStock ? (
+                    <span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full shadow-sm">
                         Out of Stock
                     </span>
-                )}
+                ) : isLowStock ? (
+                    <span className="absolute top-2 right-2 bg-amber-500 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm animate-pulse">
+                        Only {product.stock} left!
+                    </span>
+                ) : null}
             </div>
 
             <h3 className="font-semibold text-gray-800 text-lg line-clamp-1 mb-1" title={product.name}>{product.name}</h3>

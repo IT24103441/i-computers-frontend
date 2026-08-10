@@ -118,9 +118,22 @@ export default function ProductOverview() {
                         <span className="text-gray-400 text-xs font-mono">
                             ID: {product.productId}
                         </span>
-                        <span className={`px-3 py-1 text-xs font-semibold rounded-full ${product.stock === 0 ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
-                            {product.stock === 0 ? "Out of Stock" : "In Stock"}
-                        </span>
+                        {(() => {
+                            const avail = product.isAvailable === true || product.isAvailable === "true";
+                            const isOut = !avail || product.stock === 0;
+                            const isLow = avail && product.stock > 0 && product.stock <= 5;
+                            return (
+                                <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
+                                    isOut
+                                        ? "bg-red-100 text-red-700 border-red-200"
+                                        : isLow
+                                            ? "bg-amber-100 text-amber-800 border-amber-200 animate-pulse"
+                                            : "bg-emerald-100 text-emerald-700 border-emerald-200"
+                                }`}>
+                                    {isOut ? "Out of Stock" : isLow ? `Only ${product.stock} left in stock!` : "In Stock"}
+                                </span>
+                            );
+                        })()}
                     </div>
 
                     {(product.brand || product.model) && (
@@ -177,36 +190,54 @@ export default function ProductOverview() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-3 mt-auto pt-4 border-t border-gray-100">
-                        <button
-                            className="w-full sm:w-1/2 py-3 px-6 text-white bg-amber-600 font-semibold rounded-xl hover:bg-amber-700 transition-colors shadow-md flex items-center justify-center gap-2 active:scale-[0.98]"
-                            onClick={() => {
-                                addToCart(product, 1);
-                                toast.success("Product added to cart");
-                            }}
-                        >
-                            Add to Cart
-                        </button>
+                        {(() => {
+                            const avail = product.isAvailable === true || product.isAvailable === "true";
+                            const isOut = !avail || product.stock === 0;
+                            return (
+                                <>
+                                    <button
+                                        disabled={isOut}
+                                        className="w-full sm:w-1/2 py-3 px-6 text-white bg-amber-600 font-semibold rounded-xl hover:bg-amber-700 transition-colors shadow-md flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-amber-600"
+                                        onClick={() => {
+                                            addToCart(product, 1);
+                                            toast.success("Product added to cart");
+                                        }}
+                                    >
+                                        {isOut ? "Out of Stock" : "Add to Cart"}
+                                    </button>
 
-                        <Link
-                            className="w-full sm:w-1/2 py-3 px-6 text-gray-800 bg-gray-100 font-semibold rounded-xl hover:bg-gray-200 transition-colors text-center flex items-center justify-center active:scale-[0.98]"
-                            to="/checkout"
-                            state={[
-                                {
-                                    product: {
-                                        productId: product.productId,
-                                        name: product.name,
-                                        image: product.images?.[0] || product.image,
-                                        price: product.price,
-                                        labelledPrice:
-                                            product.labelledPrice ??
-                                            product.labeledPrice,
-                                    },
-                                    qty: 1,
-                                },
-                            ]}
-                        >
-                            Buy Now
-                        </Link>
+                                    {isOut ? (
+                                        <button
+                                            disabled
+                                            className="w-full sm:w-1/2 py-3 px-6 text-gray-400 bg-gray-100 font-semibold rounded-xl text-center flex items-center justify-center opacity-50 cursor-not-allowed"
+                                        >
+                                            Out of Stock
+                                        </button>
+                                    ) : (
+                                        <Link
+                                            className="w-full sm:w-1/2 py-3 px-6 text-gray-800 bg-gray-100 font-semibold rounded-xl hover:bg-gray-200 transition-colors text-center flex items-center justify-center active:scale-[0.98]"
+                                            to="/checkout"
+                                            state={[
+                                                {
+                                                    product: {
+                                                        productId: product.productId,
+                                                        name: product.name,
+                                                        image: product.images?.[0] || product.image,
+                                                        price: product.price,
+                                                        labelledPrice:
+                                                            product.labelledPrice ??
+                                                            product.labeledPrice,
+                                                    },
+                                                    qty: 1,
+                                                },
+                                            ]}
+                                        >
+                                            Buy Now
+                                        </Link>
+                                    )}
+                                </>
+                            );
+                        })()}
                     </div>
                 </div>
             </div>
