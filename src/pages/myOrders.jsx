@@ -15,6 +15,7 @@ export default function MyOrders() {
     const [pageSize, setPageSize] = useState(10);
     const [totalOrders, setTotalOrders] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
+    const [activeFilter, setActiveFilter] = useState("all");
 
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -101,6 +102,13 @@ export default function MyOrders() {
             });
     };
 
+    const filteredOrders = activeFilter === "all" ? orders : orders.filter((o) => o.status === activeFilter);
+    const pendingCount = orders.filter((o) => o.status === "Pending").length;
+    const processingCount = orders.filter((o) => o.status === "Processing").length;
+    const shippedCount = orders.filter((o) => o.status === "Shipped").length;
+    const deliveredCount = orders.filter((o) => o.status === "Delivered").length;
+    const cancelledCount = orders.filter((o) => o.status === "Cancelled").length;
+
     return (
         <div className="w-full min-h-screen p-4 sm:p-8 max-w-6xl mx-auto flex flex-col items-center pb-28 lg:pb-12">
             <div className="w-full bg-white shadow-sm border border-gray-100 mb-6 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -110,11 +118,51 @@ export default function MyOrders() {
                 </div>
             </div>
 
+            {/* Filter Tabs & Stats Bar */}
+            <div className="w-full flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div className="flex flex-wrap items-center gap-2 bg-white p-1.5 rounded-2xl border border-gray-200 shadow-sm">
+                    {["all", "Pending", "Processing", "Shipped", "Delivered", "Cancelled"].map((tab) => (
+                        <button
+                            key={tab}
+                            onClick={() => setActiveFilter(tab)}
+                            className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${
+                                activeFilter === tab
+                                    ? "bg-amber-600 text-white shadow-md"
+                                    : "text-gray-600 hover:bg-gray-100"
+                            }`}
+                        >
+                            {tab}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
+                    <span className="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
+                        Total: <strong>{orders.length}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-yellow-50 text-yellow-700 border border-yellow-200">
+                        Pending: <strong>{pendingCount}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200">
+                        Processing: <strong>{processingCount}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 border border-purple-200">
+                        Shipped: <strong>{shippedCount}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Delivered: <strong>{deliveredCount}</strong>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-xl bg-red-50 text-red-700 border border-red-200">
+                        Cancelled: <strong>{cancelledCount}</strong>
+                    </span>
+                </div>
+            </div>
+
             {loading && <LoadingScreen />}
 
-            {!loading && orders.length === 0 ? (
+            {!loading && filteredOrders.length === 0 ? (
                 <div className="w-full bg-white rounded-2xl p-12 text-center border border-gray-100 shadow-sm">
-                    <p className="text-gray-500 text-lg">No orders found.</p>
+                    <p className="text-gray-500 text-lg">No orders found matching the selected filter ({activeFilter}).</p>
                 </div>
             ) : (
                 <div className="w-full overflow-x-auto bg-white rounded-2xl shadow-sm border border-gray-100 mb-6">
@@ -131,9 +179,7 @@ export default function MyOrders() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
-                            {orders.map((order) => {
-                                const isCancellable = order.status === "Pending" || order.status === "Processing";
-                                const isCancelled = order.status === "Cancelled";
+                            {filteredOrders.map((order) => {
                                 return (
                                     <tr className="hover:bg-amber-50/40 transition-colors" key={order.orderId}>
                                         <td className="p-4 font-mono font-medium text-gray-900">{order.orderId}</td>
@@ -172,32 +218,32 @@ export default function MyOrders() {
             )}
 
             {/* Pagination Controls */}
-            <div className="w-full max-w-md bg-white shadow-md border border-gray-100 rounded-xl p-3 flex items-center justify-between gap-4 mt-auto">
+            <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-gray-100 rounded-2xl p-4 shadow-sm mt-auto">
                 <select
                     value={pageSize}
                     onChange={(e) => { setPageSize(Number(e.target.value)); setLoading(true); }}
-                    className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-700 focus:outline-none"
+                    className="px-3 py-1.5 border border-gray-200 rounded-xl text-xs font-semibold bg-gray-50 text-gray-700 focus:outline-none cursor-pointer"
                 >
                     <option value={5}>5 per page</option>
                     <option value={10}>10 per page</option>
                     <option value={20}>20 per page</option>
                 </select>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     <button
                         disabled={pageNumber === 1}
                         onClick={() => { setPageNumber(pageNumber - 1); setLoading(true); }}
-                        className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                        Prev
+                        Previous
                     </button>
-                    <span className="text-xs text-gray-600 font-medium">
+                    <span className="text-xs text-gray-600 font-semibold">
                         Page {pageNumber} of {totalPages}
                     </span>
                     <button
                         disabled={pageNumber === totalPages}
                         onClick={() => { setPageNumber(pageNumber + 1); setLoading(true); }}
-                        className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         Next
                     </button>

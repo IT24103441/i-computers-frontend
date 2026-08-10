@@ -217,33 +217,32 @@ export default function AdminUsersPage() {
             )}
 
             {/* Pagination Controls */}
-            <div className="w-full max-w-md bg-white shadow-md border border-gray-100 rounded-xl p-3 flex items-center justify-between gap-4 mt-4">
+            <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
                 <select
                     value={pageSize}
                     onChange={(e) => { setPageSize(Number(e.target.value)); setLoading(true); }}
-                    className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-700 focus:outline-none"
+                    className="px-3 py-1.5 border border-gray-200 rounded-xl text-xs font-semibold bg-gray-50 text-gray-700 focus:outline-none cursor-pointer"
                 >
-                    <option value={2}>2 per page</option>
                     <option value={5}>5 per page</option>
                     <option value={10}>10 per page</option>
                     <option value={20}>20 per page</option>
                 </select>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     <button
                         disabled={pageNumber === 1}
                         onClick={() => { setPageNumber(pageNumber - 1); setLoading(true); }}
-                        className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                        Prev
+                        Previous
                     </button>
-                    <span className="text-xs text-gray-600 font-medium">
+                    <span className="text-xs text-gray-600 font-semibold">
                         Page {pageNumber} of {totalPages}
                     </span>
                     <button
                         disabled={pageNumber === totalPages}
                         onClick={() => { setPageNumber(pageNumber + 1); setLoading(true); }}
-                        className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-4 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         Next
                     </button>
