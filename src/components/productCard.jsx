@@ -5,7 +5,7 @@ export default function ProductCard({ product }) {
     if (!product) return null;
 
     const available = product.isAvailable === true || product.isAvailable === "true";
-    const isOutOfStock = !available || product.stock === 0;
+    const isOutOfStock = !available || (product.stock ?? 0) <= 0;
     const isLowStock = available && product.stock > 0 && product.stock <= 5;
 
     return (

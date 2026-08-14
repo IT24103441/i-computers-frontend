@@ -34,11 +34,11 @@ export default function AdminProductsPage() {
 
     const inStockCount = products.filter(p => p.stock > 5 && (p.isAvailable === true || p.isAvailable === "true")).length;
     const lowStockCount = products.filter(p => p.stock > 0 && p.stock <= 5 && (p.isAvailable === true || p.isAvailable === "true")).length;
-    const outOfStockCount = products.filter(p => p.stock === 0 || p.isAvailable === false || p.isAvailable === "false").length;
+    const outOfStockCount = products.filter(p => (p.stock ?? 0) <= 0 || p.isAvailable === false || p.isAvailable === "false").length;
 
     const filteredProducts = products.filter((p) => {
         const isAvail = p.isAvailable === true || p.isAvailable === "true";
-        const isOutOfStock = p.stock === 0 || !isAvail;
+        const isOutOfStock = (p.stock ?? 0) <= 0 || !isAvail;
         const isLowStock = p.stock > 0 && p.stock <= 5 && isAvail;
         const isInStock = p.stock > 5 && isAvail;
 
@@ -162,7 +162,7 @@ export default function AdminProductsPage() {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2">
                                             <span className={`text-xs font-bold ${
-                                                product.stock === 0 ? "text-red-600" : product.stock <= 5 ? "text-amber-600" : "text-gray-900"
+                                                product.stock <= 0 ? "text-red-600" : product.stock <= 5 ? "text-amber-600" : "text-gray-900"
                                             }`}>
                                                 {product.stock} units
                                             </span>
@@ -176,7 +176,7 @@ export default function AdminProductsPage() {
                                     <td className="px-6 py-4">
                                         {(() => {
                                             const avail = product.isAvailable === true || product.isAvailable === "true";
-                                            const isOut = !avail || product.stock === 0;
+                                            const isOut = !avail || (product.stock ?? 0) <= 0;
                                             const isLow = avail && product.stock > 0 && product.stock <= 5;
                                             return (
                                                 <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${

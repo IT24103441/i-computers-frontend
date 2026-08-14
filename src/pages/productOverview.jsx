@@ -120,7 +120,7 @@ export default function ProductOverview() {
                         </span>
                         {(() => {
                             const avail = product.isAvailable === true || product.isAvailable === "true";
-                            const isOut = !avail || product.stock === 0;
+                            const isOut = !avail || (product.stock ?? 0) <= 0;
                             const isLow = avail && product.stock > 0 && product.stock <= 5;
                             return (
                                 <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
@@ -192,7 +192,7 @@ export default function ProductOverview() {
                     <div className="flex flex-col sm:flex-row gap-3 mt-auto pt-4 border-t border-gray-100">
                         {(() => {
                             const avail = product.isAvailable === true || product.isAvailable === "true";
-                            const isOut = !avail || product.stock === 0;
+                            const isOut = !avail || (product.stock ?? 0) <= 0;
                             return (
                                 <>
                                     <button
