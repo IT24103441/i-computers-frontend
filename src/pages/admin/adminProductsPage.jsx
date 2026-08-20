@@ -89,11 +89,10 @@ export default function AdminProductsPage() {
                         <button
                             key={tab}
                             onClick={() => setActiveFilter(tab)}
-                            className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${
-                                activeFilter === tab
-                                    ? "bg-amber-600 text-white shadow-md"
-                                    : "text-gray-600 hover:bg-gray-100"
-                            }`}
+                            className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${activeFilter === tab
+                                ? "bg-amber-600 text-white shadow-md"
+                                : "text-gray-600 hover:bg-gray-100"
+                                }`}
                         >
                             {tab}
                         </button>
@@ -161,9 +160,8 @@ export default function AdminProductsPage() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2">
-                                            <span className={`text-xs font-bold ${
-                                                product.stock <= 0 ? "text-red-600" : product.stock <= 5 ? "text-amber-600" : "text-gray-900"
-                                            }`}>
+                                            <span className={`text-xs font-bold ${product.stock <= 0 ? "text-red-600" : product.stock <= 5 ? "text-amber-600" : "text-gray-900"
+                                                }`}>
                                                 {product.stock} units
                                             </span>
                                             {product.stock > 0 && product.stock <= 5 && (
@@ -179,13 +177,12 @@ export default function AdminProductsPage() {
                                             const isOut = !avail || (product.stock ?? 0) <= 0;
                                             const isLow = avail && product.stock > 0 && product.stock <= 5;
                                             return (
-                                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
-                                                    isOut
-                                                        ? 'bg-red-100 text-red-800 border border-red-200'
-                                                        : isLow
-                                                            ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                                                            : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                                                }`}>
+                                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${isOut
+                                                    ? 'bg-red-100 text-red-800 border border-red-200'
+                                                    : isLow
+                                                        ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                                                        : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                                    }`}>
                                                     {isOut ? 'Out of Stock' : isLow ? 'Low Stock' : 'In Stock'}
                                                 </span>
                                             );

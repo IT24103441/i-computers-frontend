@@ -72,10 +72,10 @@ export default function AdminUsersPage() {
     }
 
     const filteredUsers = users.filter((u) => {
-        const matchesFilter = activeFilter === "all" 
-            ? true 
-            : activeFilter === "Admin" 
-                ? u.isAdmin 
+        const matchesFilter = activeFilter === "all"
+            ? true
+            : activeFilter === "Admin"
+                ? u.isAdmin
                 : !u.isAdmin;
         const q = searchQuery.toLowerCase().trim();
         const matchesSearch = !q ||
@@ -125,11 +125,10 @@ export default function AdminUsersPage() {
                         <button
                             key={tab}
                             onClick={() => setActiveFilter(tab)}
-                            className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${
-                                activeFilter === tab
-                                    ? "bg-amber-600 text-white shadow-md"
-                                    : "text-gray-600 hover:bg-gray-100"
-                            }`}
+                            className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${activeFilter === tab
+                                ? "bg-amber-600 text-white shadow-md"
+                                : "text-gray-600 hover:bg-gray-100"
+                                }`}
                         >
                             {tab}
                         </button>

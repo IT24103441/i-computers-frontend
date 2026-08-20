@@ -76,11 +76,11 @@ export default function AdminContactsPage() {
           prev.map((m) =>
             m._id === msgId || m.id === msgId
               ? {
-                  ...m,
-                  status: "replied",
-                  replyMessage: replyText.trim(),
-                  repliedAt: new Date(),
-                }
+                ...m,
+                status: "replied",
+                replyMessage: replyText.trim(),
+                repliedAt: new Date(),
+              }
               : m
           )
         );
@@ -140,11 +140,10 @@ export default function AdminContactsPage() {
             <button
               key={tab}
               onClick={() => setActiveFilter(tab)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${
-                activeFilter === tab
-                  ? "bg-amber-600 text-white shadow-md"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
+              className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${activeFilter === tab
+                ? "bg-amber-600 text-white shadow-md"
+                : "text-gray-600 hover:bg-gray-100"
+                }`}
             >
               {tab}
             </button>
@@ -197,11 +196,10 @@ export default function AdminContactsPage() {
 
                   <div className="flex items-center gap-3">
                     <span
-                      className={`px-3 py-1 rounded-full text-[11px] font-bold capitalize ${
-                        msg.status === "replied"
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-yellow-100 text-yellow-700"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-[11px] font-bold capitalize ${msg.status === "replied"
+                        ? "bg-emerald-100 text-emerald-700"
+                        : "bg-yellow-100 text-yellow-700"
+                        }`}
                     >
                       {msg.status}
                     </span>

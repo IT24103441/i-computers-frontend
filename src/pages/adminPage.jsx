@@ -18,7 +18,7 @@ export default function AdminPage() {
     const [user, setUser] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-    
+
     // Theme state (Dark Mode / Light Mode)
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const savedTheme = localStorage.getItem("adminTheme");
@@ -99,10 +99,9 @@ export default function AdminPage() {
     };
 
     return (
-        <div className={`w-full h-screen flex overflow-hidden relative transition-colors duration-300 ${
-            isDarkMode ? 'dark bg-slate-950 text-slate-100' : 'bg-gray-50 text-slate-800'
-        }`}>
-            
+        <div className={`w-full h-screen flex overflow-hidden relative transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-950 text-slate-100' : 'bg-gray-50 text-slate-800'
+            }`}>
+
             {/* Mobile Sidebar Overlay Backdrop */}
             {isSidebarOpen && (
                 <div
@@ -113,13 +112,11 @@ export default function AdminPage() {
 
             {/* Sidebar */}
             <aside
-                className={`fixed lg:static inset-y-0 left-0 w-72 h-full border-r flex flex-col shadow-xl lg:shadow-sm z-40 transform transition-all duration-300 ${
-                    isDarkMode
-                        ? 'bg-slate-900 border-slate-800 text-slate-200'
-                        : 'bg-white border-gray-200 text-gray-800'
-                } ${
-                    isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-                }`}
+                className={`fixed lg:static inset-y-0 left-0 w-72 h-full border-r flex flex-col shadow-xl lg:shadow-sm z-40 transform transition-all duration-300 ${isDarkMode
+                    ? 'bg-slate-900 border-slate-800 text-slate-200'
+                    : 'bg-white border-gray-200 text-gray-800'
+                    } ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+                    }`}
             >
                 <div className={`p-6 border-b flex items-center justify-between ${isDarkMode ? 'border-slate-800' : 'border-gray-100'}`}>
                     <h1 className="text-2xl font-bold text-amber-500 tracking-tight flex items-center gap-2">
@@ -142,13 +139,12 @@ export default function AdminPage() {
                                 key={item.path}
                                 to={item.path}
                                 onClick={() => setIsSidebarOpen(false)}
-                                className={`flex items-center gap-3.5 p-3.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                                    isActive
-                                        ? 'bg-amber-600 text-white shadow-md shadow-amber-500/20 font-bold'
-                                        : isDarkMode
+                                className={`flex items-center gap-3.5 p-3.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
+                                    ? 'bg-amber-600 text-white shadow-md shadow-amber-500/20 font-bold'
+                                    : isDarkMode
                                         ? 'text-slate-300 hover:bg-slate-800 hover:text-white'
                                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                }`}
+                                    }`}
                             >
                                 {item.icon}
                                 <span>{item.name}</span>
@@ -164,9 +160,8 @@ export default function AdminPage() {
                             toast.success("Logged out successfully");
                             navigate("/login");
                         }}
-                        className={`w-full flex items-center gap-3 p-3.5 text-red-500 font-semibold text-sm rounded-xl transition-all duration-200 group ${
-                            isDarkMode ? 'hover:bg-red-500/10 text-red-400' : 'hover:bg-red-50 text-red-500'
-                        }`}
+                        className={`w-full flex items-center gap-3 p-3.5 text-red-500 font-semibold text-sm rounded-xl transition-all duration-200 group ${isDarkMode ? 'hover:bg-red-500/10 text-red-400' : 'hover:bg-red-50 text-red-500'
+                            }`}
                     >
                         <MdLogout size={20} className="group-hover:translate-x-1 transition-transform" />
                         <span>Logout</span>
@@ -177,16 +172,14 @@ export default function AdminPage() {
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
                 {/* Header Bar */}
-                <header className={`h-16 sm:h-20 border-b flex items-center justify-between px-4 sm:px-8 lg:px-10 shadow-sm z-10 flex-shrink-0 transition-colors duration-300 ${
-                    isDarkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-200 text-gray-800'
-                }`}>
+                <header className={`h-16 sm:h-20 border-b flex items-center justify-between px-4 sm:px-8 lg:px-10 shadow-sm z-10 flex-shrink-0 transition-colors duration-300 ${isDarkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-200 text-gray-800'
+                    }`}>
                     <div className="flex items-center gap-3 min-w-0">
                         {/* Hamburger Button for Mobile */}
                         <button
                             onClick={() => setIsSidebarOpen(true)}
-                            className={`lg:hidden p-2 rounded-xl transition-colors ${
-                                isDarkMode ? 'bg-slate-800 text-slate-200 hover:bg-slate-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
+                            className={`lg:hidden p-2 rounded-xl transition-colors ${isDarkMode ? 'bg-slate-800 text-slate-200 hover:bg-slate-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                }`}
                             title="Open Navigation Menu"
                         >
                             <BiMenu size={24} />
@@ -200,11 +193,10 @@ export default function AdminPage() {
                         {/* Dark Mode / Light Mode Toggle Button */}
                         <button
                             onClick={toggleTheme}
-                            className={`p-2.5 rounded-xl border transition-all flex items-center justify-center ${
-                                isDarkMode
-                                    ? 'bg-slate-800 text-amber-400 border-slate-700 hover:bg-slate-700 hover:text-amber-300 shadow-sm'
-                                    : 'bg-gray-100 text-slate-700 border-gray-200 hover:bg-gray-200 hover:text-amber-600 shadow-sm'
-                            }`}
+                            className={`p-2.5 rounded-xl border transition-all flex items-center justify-center ${isDarkMode
+                                ? 'bg-slate-800 text-amber-400 border-slate-700 hover:bg-slate-700 hover:text-amber-300 shadow-sm'
+                                : 'bg-gray-100 text-slate-700 border-gray-200 hover:bg-gray-200 hover:text-amber-600 shadow-sm'
+                                }`}
                             title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
                         >
                             {isDarkMode ? <BiSun size={20} /> : <BiMoon size={20} />}
@@ -213,15 +205,13 @@ export default function AdminPage() {
                         {/* Top-Right Profile Clickable Badge */}
                         <div
                             onClick={() => setIsProfileModalOpen(true)}
-                            className={`flex items-center gap-3 cursor-pointer p-1.5 sm:p-2 rounded-2xl transition-all group ${
-                                isDarkMode ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
-                            }`}
+                            className={`flex items-center gap-3 cursor-pointer p-1.5 sm:p-2 rounded-2xl transition-all group ${isDarkMode ? 'hover:bg-slate-800' : 'hover:bg-gray-100'
+                                }`}
                             title="Click to edit Admin Profile & Password"
                         >
                             <div className="hidden sm:flex flex-col items-end">
-                                <span className={`text-xs sm:text-sm font-bold group-hover:text-amber-500 transition-colors ${
-                                    isDarkMode ? 'text-slate-100' : 'text-gray-900'
-                                }`}>
+                                <span className={`text-xs sm:text-sm font-bold group-hover:text-amber-500 transition-colors ${isDarkMode ? 'text-slate-100' : 'text-gray-900'
+                                    }`}>
                                     {user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || "Administrator" : "Administrator"}
                                 </span>
                                 <span className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>{user?.email || "Super Admin"}</span>
@@ -240,9 +230,8 @@ export default function AdminPage() {
                 </header>
 
                 {/* Sub-Pages Content Container */}
-                <main className={`flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 transition-colors duration-300 ${
-                    isDarkMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50/50 text-gray-800'
-                }`}>
+                <main className={`flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 transition-colors duration-300 ${isDarkMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50/50 text-gray-800'
+                    }`}>
                     <div className="max-w-7xl mx-auto">
                         <Routes>
                             {navItems.map((item) => (

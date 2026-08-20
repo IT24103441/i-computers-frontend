@@ -65,7 +65,7 @@ export default function AdminReviewsPage() {
 
   return (
     <div className="w-full space-y-6">
-      
+
       {/* Top Header Card */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
         <div>
@@ -92,11 +92,10 @@ export default function AdminReviewsPage() {
             <button
               key={tab}
               onClick={() => setActiveFilter(tab)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${
-                activeFilter === tab
-                  ? "bg-amber-600 text-white shadow-md"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
+              className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${activeFilter === tab
+                ? "bg-amber-600 text-white shadow-md"
+                : "text-gray-600 hover:bg-gray-100"
+                }`}
             >
               {tab}
             </button>
@@ -150,7 +149,7 @@ export default function AdminReviewsPage() {
                   const revId = rev._id || rev.id;
                   return (
                     <tr key={revId} className="hover:bg-gray-50/50 transition-colors">
-                      
+
                       {/* Customer Info */}
                       <td className="p-4">
                         <div className="flex items-center gap-3">
@@ -201,13 +200,12 @@ export default function AdminReviewsPage() {
                         <select
                           value={rev.status}
                           onChange={(e) => handleUpdateStatus(revId, e.target.value)}
-                          className={`px-2.5 py-1.5 rounded-xl text-xs font-bold capitalize border outline-none cursor-pointer transition-all ${
-                            rev.status === "approved"
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
-                              : rev.status === "pending"
+                          className={`px-2.5 py-1.5 rounded-xl text-xs font-bold capitalize border outline-none cursor-pointer transition-all ${rev.status === "approved"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                            : rev.status === "pending"
                               ? "bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100"
                               : "bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
-                          }`}
+                            }`}
                         >
                           <option value="approved" className="bg-white text-gray-800 font-semibold">Approved</option>
                           <option value="pending" className="bg-white text-gray-800 font-semibold">Pending</option>
