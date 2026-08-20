@@ -9,6 +9,7 @@ import AdminOrdersPage from "./admin/adminOrdersPage";
 import AdminReviewsPage from "./admin/adminReviewsPage";
 import AdminContactsPage from "./admin/adminContactsPage";
 import AdminUsersPage from "./admin/adminUsersPage";
+import AdminProfileModal from '../components/adminProfileModal';
 import api from '../utils/api';
 import toast from 'react-hot-toast';
 
@@ -16,6 +17,7 @@ export default function AdminPage() {
     const location = useLocation();
     const [user, setUser] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -166,15 +168,26 @@ export default function AdminPage() {
                         </h2>
                     </div>
 
-                    <div className="flex items-center gap-3 flex-shrink-0">
+                    {/* Top-Right Profile Clickable Badge */}
+                    <div
+                        onClick={() => setIsProfileModalOpen(true)}
+                        className="flex items-center gap-3 flex-shrink-0 cursor-pointer hover:bg-gray-100 p-1.5 sm:p-2 rounded-2xl transition-all group"
+                        title="Click to edit Admin Profile & Password"
+                    >
                         <div className="hidden sm:flex flex-col items-end">
-                            <span className="text-xs sm:text-sm font-bold text-gray-900">
+                            <span className="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-amber-600 transition-colors">
                                 {user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || "Administrator" : "Administrator"}
                             </span>
                             <span className="text-[11px] text-gray-500">{user?.email || "Super Admin"}</span>
                         </div>
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-amber-500 to-amber-400 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-md border-2 border-white">
-                            {user?.firstName ? `${user.firstName[0]}${user.lastName ? user.lastName[0] : ''}` : "AD"}
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gradient-to-tr from-amber-500 to-amber-400 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-md border-2 border-white group-hover:scale-105 transition-transform flex-shrink-0">
+                            {user?.image ? (
+                                <img src={user.image} alt="Admin Avatar" className="w-full h-full object-cover" />
+                            ) : user?.firstName ? (
+                                `${user.firstName[0]}${user.lastName ? user.lastName[0] : ''}`
+                            ) : (
+                                "AD"
+                            )}
                         </div>
                     </div>
                 </header>
@@ -196,6 +209,14 @@ export default function AdminPage() {
                     </div>
                 </main>
             </div>
+
+            {/* Admin Profile & Password Modal */}
+            <AdminProfileModal
+                isOpen={isProfileModalOpen}
+                onClose={() => setIsProfileModalOpen(false)}
+                user={user}
+                onProfileUpdated={(updatedUser) => setUser(updatedUser)}
+            />
         </div>
     );
 }
