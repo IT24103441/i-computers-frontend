@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { BiX, BiUser, BiCamera, BiKey, BiCheck, BiShieldQuarter } from "react-icons/bi";
 import { HiSparkles } from "react-icons/hi2";
 
-export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpdated }) {
+export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpdated, isDarkMode }) {
   const [activeTab, setActiveTab] = useState("profile"); // 'profile' | 'security'
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -183,8 +183,10 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-fade-in">
+      <div className={`relative w-full max-w-lg rounded-3xl shadow-2xl border overflow-hidden flex flex-col max-h-[90vh] transition-colors ${
+        isDarkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-100 text-slate-800'
+      }`}>
         {/* Modal Header */}
         <div className="px-6 py-5 bg-gradient-to-r from-slate-900 via-slate-800 to-amber-950 text-white flex justify-between items-center relative overflow-hidden">
           <div className="absolute -top-12 -right-12 w-40 h-40 bg-amber-500/20 rounded-full blur-2xl pointer-events-none" />
@@ -206,13 +208,13 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-gray-200 bg-gray-50/80 px-6 pt-3 gap-2">
+        <div className={`flex border-b px-6 pt-3 gap-2 ${isDarkMode ? 'border-slate-800 bg-slate-900/90' : 'border-gray-200 bg-gray-50/80'}`}>
           <button
             onClick={() => setActiveTab("profile")}
             className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${
               activeTab === "profile"
-                ? "border-amber-600 text-amber-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "border-amber-500 text-amber-500"
+                : isDarkMode ? "border-transparent text-slate-400 hover:text-slate-200" : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
           >
             <BiUser size={18} /> Profile & Photo
@@ -221,8 +223,8 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
             onClick={() => setActiveTab("security")}
             className={`pb-3 px-4 text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${
               activeTab === "security"
-                ? "border-amber-600 text-amber-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+                ? "border-amber-500 text-amber-500"
+                : isDarkMode ? "border-transparent text-slate-400 hover:text-slate-200" : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
           >
             <BiShieldQuarter size={18} /> Password & Security
@@ -235,15 +237,15 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
             <form onSubmit={handleUpdateProfile} className="space-y-5">
               {/* Photo Upload */}
               <div className="flex flex-col items-center justify-center gap-3">
-                <div className="relative group w-24 h-24 rounded-full overflow-hidden border-4 border-amber-500/20 shadow-lg bg-slate-100 flex items-center justify-center">
+                <div className="relative group w-24 h-24 rounded-full overflow-hidden border-4 border-amber-500/20 shadow-lg bg-slate-800 flex items-center justify-center">
                   {previewUrl ? (
                     <img src={previewUrl} alt="Admin Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-2xl font-bold text-amber-600">
+                    <span className="text-2xl font-bold text-amber-500">
                       {firstName ? firstName[0].toUpperCase() : "A"}
                     </span>
                   )}
-                  <label className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white cursor-pointer text-xs font-semibold gap-1">
+                  <label className="absolute inset-0 bg-slate-950/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white cursor-pointer text-xs font-semibold gap-1">
                     <BiCamera size={22} />
                     <span>Change</span>
                     <input
@@ -254,7 +256,7 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
                     />
                   </label>
                 </div>
-                <p className="text-[11px] text-gray-400 text-center">
+                <p className={`text-[11px] text-center ${isDarkMode ? 'text-slate-400' : 'text-gray-400'}`}>
                   Click on the avatar to upload a new profile image.
                 </p>
               </div>
@@ -262,7 +264,7 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
               {/* Name Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <label className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>
                     First Name
                   </label>
                   <input
@@ -270,11 +272,15 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
                     required
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-800 focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all"
+                    className={`w-full px-3.5 py-2.5 border rounded-xl text-sm font-medium outline-none transition-all ${
+                      isDarkMode
+                        ? 'bg-slate-800 border-slate-700 text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20'
+                        : 'bg-gray-50 border-gray-200 text-gray-800 focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20'
+                    }`}
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <label className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>
                     Last Name
                   </label>
                   <input
@@ -282,21 +288,27 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
                     required
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-800 focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all"
+                    className={`w-full px-3.5 py-2.5 border rounded-xl text-sm font-medium outline-none transition-all ${
+                      isDarkMode
+                        ? 'bg-slate-800 border-slate-700 text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20'
+                        : 'bg-gray-50 border-gray-200 text-gray-800 focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20'
+                    }`}
                   />
                 </div>
               </div>
 
               {/* Email Display (Read-Only) */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                <label className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-slate-400' : 'text-gray-400'}`}>
                   Email Address (Read-Only)
                 </label>
                 <input
                   type="email"
                   disabled
                   value={user?.email || ""}
-                  className="w-full px-3.5 py-2.5 bg-gray-100 border border-gray-200 rounded-xl text-sm font-medium text-gray-500 cursor-not-allowed"
+                  className={`w-full px-3.5 py-2.5 border rounded-xl text-sm font-medium cursor-not-allowed ${
+                    isDarkMode ? 'bg-slate-800/50 border-slate-700 text-slate-400' : 'bg-gray-100 border-gray-200 text-gray-500'
+                  }`}
                 />
               </div>
 
@@ -304,11 +316,11 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm disabled:opacity-50"
+                className="w-full py-3 bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm disabled:opacity-50"
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                    <svg className="animate-spin h-4 w-4 text-slate-950" viewBox="0 0 24 24" fill="none">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                     </svg>
@@ -325,15 +337,17 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
 
           {activeTab === "security" && (
             <form onSubmit={handleChangePassword} className="space-y-4">
-              <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-start gap-2.5">
-                <BiKey size={18} className="text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className={`p-3.5 border rounded-xl text-xs flex items-start gap-2.5 ${
+                isDarkMode ? 'bg-amber-500/10 border-amber-500/30 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-800'
+              }`}>
+                <BiKey size={18} className="text-amber-500 flex-shrink-0 mt-0.5" />
                 <span>
                   Update your admin account password. Make sure your new password is at least 6 characters long and stored securely.
                 </span>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <label className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>
                   New Password
                 </label>
                 <input
@@ -342,12 +356,16 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
                   placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-800 focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all"
+                  className={`w-full px-3.5 py-2.5 border rounded-xl text-sm font-medium outline-none transition-all ${
+                    isDarkMode
+                      ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20'
+                      : 'bg-gray-50 border-gray-200 text-gray-800 focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20'
+                  }`}
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                <label className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>
                   Confirm New Password
                 </label>
                 <input
@@ -356,7 +374,11 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
                   placeholder="••••••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-800 focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all"
+                  className={`w-full px-3.5 py-2.5 border rounded-xl text-sm font-medium outline-none transition-all ${
+                    isDarkMode
+                      ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20'
+                      : 'bg-gray-50 border-gray-200 text-gray-800 focus:bg-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20'
+                  }`}
                 />
               </div>
 
@@ -364,11 +386,11 @@ export default function AdminProfileModal({ isOpen, onClose, user, onProfileUpda
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm disabled:opacity-50 mt-4"
+                className="w-full py-3 bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm disabled:opacity-50 mt-4"
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                    <svg className="animate-spin h-4 w-4 text-slate-950" viewBox="0 0 24 24" fill="none">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                     </svg>
