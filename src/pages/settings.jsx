@@ -3,6 +3,8 @@ import api from "../utils/api";
 import uploadMedia from "../utils/mediaUpload";
 import toast from "react-hot-toast";
 import LoadingScreen from "../components/loadingScreen";
+import { BiUser, BiCamera, BiKey, BiEnvelope, BiCheck, BiShieldQuarter } from "react-icons/bi";
+import { HiSparkles } from "react-icons/hi2";
 
 export default function Settings() {
     const [user, setUser] = useState(null);
@@ -25,8 +27,8 @@ export default function Settings() {
                 })
                 .then((res) => {
                     setUser(res.data);
-                    setFirstName(res.data.firstName);
-                    setLastName(res.data.lastName);
+                    setFirstName(res.data.firstName || "");
+                    setLastName(res.data.lastName || "");
                 })
                 .catch((err) => {
                     console.log(err);
@@ -37,7 +39,8 @@ export default function Settings() {
         }
     }, []);
 
-    async function handleUpdateProfile() {
+    async function handleUpdateProfile(e) {
+        if (e) e.preventDefault();
         setLoading(true);
 
         let imageUrl = user?.image || "";
@@ -111,7 +114,8 @@ export default function Settings() {
         }
     }
 
-    async function handleChangePassword() {
+    async function handleChangePassword(e) {
+        if (e) e.preventDefault();
         if (!password) {
             toast.error("Please enter a new password");
             return;
@@ -151,6 +155,8 @@ export default function Settings() {
 
             setLoading(false);
             toast.success("Password changed successfully");
+            setPassword("");
+            setConfirmPassword("");
         } catch (err) {
             console.error("Password change error:", err);
             toast.error(err?.response?.data?.message || err?.message || "Failed to change password");
@@ -159,95 +165,196 @@ export default function Settings() {
     }
 
     return (
-        <div className="w-full h-full overflow-y-auto p-4 pb-20 flex flex-col lg:flex-row justify-center items-center gap-6">
-            <div className="w-full max-w-[420px] p-6 bg-white shadow-xl rounded-2xl border border-gray-100 flex flex-col">
-                <h1 className="text-2xl font-bold text-gray-800 mb-4">Profile Information</h1>
-                
-                <div className="flex items-center gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-full overflow-hidden bg-amber-50 border-2 border-amber-500 flex items-center justify-center flex-shrink-0">
-                        {image ? (
-                            <img src={URL.createObjectURL(image)} alt="Preview" className="w-full h-full object-cover" />
-                        ) : user?.image ? (
-                            <img src={user.image} alt="Profile" className="w-full h-full object-cover" />
-                        ) : (
-                            <span className="text-amber-600 font-bold text-xl">
-                                {user?.firstName ? user.firstName.charAt(0).toUpperCase() : "U"}
-                            </span>
-                        )}
+        <div className="w-full min-h-screen bg-slate-50 text-slate-800 pb-16">
+            {loading && <LoadingScreen />}
+
+            {/* HERO BANNER - Matching Home Page Design */}
+            <section className="relative w-full bg-gradient-to-br from-slate-900 via-slate-800 to-amber-950 text-white overflow-hidden py-12 px-6 shadow-md">
+                {/* Subtle Background Glows */}
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="max-w-7xl mx-auto space-y-3 relative z-10 text-center md:text-left">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider backdrop-blur-md">
+                        <HiSparkles size={16} /> Personal Preference Center
                     </div>
-                    <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-gray-700">{user?.firstName} {user?.lastName}</span>
-                        <span className="text-xs text-gray-400">{user?.email}</span>
-                    </div>
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
+                        Account <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500">Settings</span>
+                    </h1>
+                    <p className="text-gray-300 text-sm sm:text-base max-w-2xl leading-relaxed">
+                        Update your personal profile information, upload a profile avatar, and manage your account security credentials.
+                    </p>
                 </div>
+            </section>
 
-                <label className="text-xs font-semibold text-gray-600 mb-1">First Name</label>
-                <input
-                    type="text"
-                    className="w-full h-11 border border-gray-200 rounded-xl px-3 mb-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none"
-                    value={firstName}
-                    onChange={(e) => {
-                        setFirstName(e.target.value);
-                    }}
-                />
-                <label className="text-xs font-semibold text-gray-600 mb-1">Last Name</label>
-                <input
-                    type="text"
-                    className="w-full h-11 border border-gray-200 rounded-xl px-3 mb-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none"
-                    value={lastName}
-                    onChange={(e) => {
-                        setLastName(e.target.value);
-                    }}
-                />
-                <label className="text-xs font-semibold text-gray-600 mb-1">Profile Image</label>
-                <input
-                    type="file"
-                    accept="image/*"
-                    className="w-full h-11 border border-gray-200 rounded-xl px-3 py-2 text-sm mb-4 text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
-                    onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                            setImage(e.target.files[0]);
-                        }
-                    }}
-                />
-                <button
-                    className="w-full h-11 bg-amber-600 text-white font-semibold rounded-xl hover:bg-amber-700 transition-colors shadow-md active:scale-[0.98]"
-                    onClick={handleUpdateProfile}
-                >
-                    Update Profile
-                </button>
-            </div>
+            {/* CONTENT GRID */}
+            <div className="max-w-7xl mx-auto px-6 py-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    
+                    {/* CARD 1: PROFILE INFORMATION */}
+                    <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-6">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                    <BiUser className="text-amber-600" size={22} /> Profile Information
+                                </h2>
+                                <p className="text-xs text-slate-500 mt-1">Manage your name and avatar picture</p>
+                            </div>
+                            <span className="text-xs font-semibold px-3 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-200">
+                                Personal Info
+                            </span>
+                        </div>
 
-            <div className="w-[400px] p-4 h-[400px] bg-white shadow-2xl rounded-lg">
-                <h1 className="text-2xl font-semibold mb-4">Change Password</h1>
-                <label className="text-sm font-medium">New Password</label>
-                <input
-                    type="password"
-                    className="w-full h-[40px] border border-gray-300 rounded-md px-2 mb-4"
-                    value={password}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                    }}
-                />
-                <label className="text-sm font-medium">Confirm New Password</label>
-                <input
-                    type="password"
-                    className="w-full h-[40px] border border-gray-300 rounded-md px-2 mb-4"
-                    value={confirmPassword}
-                    onChange={(e) => {
-                        setConfirmPassword(e.target.value);
-                    }}
-                />
-                <button
-                    className="w-full h-[40px] bg-accent/80 text-white rounded-md hover:bg-accent"
-                    onClick={handleChangePassword}
-                >
-                    Change Password
-                </button>
+                        {/* Avatar & User Details */}
+                        <div className="flex items-center gap-5 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                            <div className="relative group w-20 h-20 rounded-full overflow-hidden bg-amber-100 border-2 border-amber-500 flex items-center justify-center flex-shrink-0 shadow-md">
+                                {image ? (
+                                    <img src={URL.createObjectURL(image)} alt="Preview" className="w-full h-full object-cover" />
+                                ) : user?.image ? (
+                                    <img src={user.image} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    <span className="text-amber-600 font-bold text-2xl">
+                                        {user?.firstName ? user.firstName.charAt(0).toUpperCase() : "U"}
+                                    </span>
+                                )}
+                                <label className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white cursor-pointer">
+                                    <BiCamera size={24} />
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                setImage(e.target.files[0]);
+                                            }
+                                        }}
+                                    />
+                                </label>
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-slate-900 text-base">
+                                    {user?.firstName ? `${user.firstName} ${user.lastName || ''}` : "Valued Member"}
+                                </h3>
+                                <p className="text-xs text-slate-500 font-medium">{user?.email || "No email linked"}</p>
+                                <label className="inline-flex items-center gap-1 mt-2 text-xs font-bold text-amber-600 hover:text-amber-700 cursor-pointer">
+                                    <BiCamera size={14} /> Change Photo
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                setImage(e.target.files[0]);
+                                            }
+                                        }}
+                                    />
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Input Fields */}
+                        <form onSubmit={handleUpdateProfile} className="space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">First Name</label>
+                                    <input
+                                        type="text"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:bg-white focus:border-amber-600 focus:ring-2 focus:ring-amber-600/20 outline-none transition-all"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        placeholder="First Name"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Last Name</label>
+                                    <input
+                                        type="text"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:bg-white focus:border-amber-600 focus:ring-2 focus:ring-amber-600/20 outline-none transition-all"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        placeholder="Last Name"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                                    <BiEnvelope /> Email Address (Read-Only)
+                                </label>
+                                <input
+                                    type="email"
+                                    disabled
+                                    className="w-full bg-slate-100 border border-slate-200 text-slate-500 rounded-xl px-4 py-3 text-sm cursor-not-allowed"
+                                    value={user?.email || ""}
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full py-3.5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold rounded-xl shadow-lg shadow-amber-600/25 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm mt-2 disabled:opacity-50"
+                            >
+                                <BiCheck size={18} /> Update Profile
+                            </button>
+                        </form>
+                    </div>
+
+                    {/* CARD 2: CHANGE PASSWORD */}
+                    <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-6">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                    <BiShieldQuarter className="text-amber-600" size={22} /> Security & Password
+                                </h2>
+                                <p className="text-xs text-slate-500 mt-1">Keep your account secure with a strong password</p>
+                            </div>
+                            <span className="text-xs font-semibold px-3 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-200">
+                                Credentials
+                            </span>
+                        </div>
+
+                        <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80 text-amber-900 text-xs flex items-start gap-3">
+                            <BiKey size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                            <span>
+                                Ensure your new password contains a mix of letters, numbers, and special symbols for maximum security.
+                            </span>
+                        </div>
+
+                        <form onSubmit={handleChangePassword} className="space-y-4">
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">New Password</label>
+                                <input
+                                    type="password"
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:bg-white focus:border-amber-600 focus:ring-2 focus:ring-amber-600/20 outline-none transition-all"
+                                    value={password}
+                                    placeholder="••••••••••••"
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Confirm New Password</label>
+                                <input
+                                    type="password"
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:bg-white focus:border-amber-600 focus:ring-2 focus:ring-amber-600/20 outline-none transition-all"
+                                    value={confirmPassword}
+                                    placeholder="••••••••••••"
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full py-3.5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold rounded-xl shadow-lg shadow-amber-600/25 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm mt-2 disabled:opacity-50"
+                            >
+                                <BiCheck size={18} /> Change Password
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
             </div>
-            {
-                loading && <LoadingScreen />
-            }
         </div>
     );
 }
