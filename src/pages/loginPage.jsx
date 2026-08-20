@@ -4,6 +4,9 @@ import { toast } from 'react-hot-toast';
 import api from '../utils/api';
 import { useGoogleLogin } from '@react-oauth/google';
 import { BsGoogle } from 'react-icons/bs';
+import { BiEnvelope, BiKey } from 'react-icons/bi';
+import { HiSparkles } from 'react-icons/hi2';
+
 export default function LoginPage() {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
@@ -85,6 +88,7 @@ export default function LoginPage() {
       }
     }
   );
+
   async function handleLogin() {
     setLoading(true)
     try {
@@ -110,48 +114,105 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[url('/login-bg.jpg')] bg-no-repeat bg-center bg-cover flex items-center justify-center p-4">
-      <div className="w-full max-w-md p-6 sm:p-8 backdrop-blur-xl bg-white/20 border border-white/30 rounded-2xl shadow-2xl flex flex-col gap-6">
-        <h1 className="text-4xl font-bold text-white text-center">Login</h1>
-        <div className="flex flex-col gap-4">
-          <input
-            type="text"
-            placeholder="Email"
-            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-          />
-          <div>
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-            <div className="text-right mt-2">
-              <Link to="/forget-password" className="text-sm text-white/80 hover:text-white font-medium hover:underline transition-colors">
+    <div className="relative w-full min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-amber-950 flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+      {/* Background glow accents matching home page */}
+      <div className="absolute -top-24 -left-24 w-96 h-96 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="relative z-10 w-full max-w-md bg-slate-900/80 backdrop-blur-xl p-8 rounded-3xl border border-slate-700/80 shadow-2xl space-y-6">
+        
+        {/* Brand Header & Badge */}
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider backdrop-blur-md mb-1">
+            <HiSparkles size={15} /> Welcome Back
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 tracking-tight">
+            Account Login
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-300">
+            Sign in to access your orders, profile, and exclusive deals.
+          </p>
+        </div>
+
+        {/* Input Form */}
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <BiEnvelope className="text-amber-400" size={16} /> Email Address
+            </label>
+            <div className="relative">
+              <input
+                type="email"
+                placeholder="you@example.com"
+                className="w-full bg-slate-800/80 border border-slate-700 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-white placeholder-slate-400 rounded-xl px-4 py-3 text-sm outline-none transition-all"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                <BiKey className="text-amber-400" size={16} /> Password
+              </label>
+              <Link to="/forget-password" className="text-xs text-amber-400 hover:text-amber-300 font-medium transition-colors">
                 Forgot password?
               </Link>
             </div>
+            <div className="relative">
+              <input
+                type="password"
+                placeholder="••••••••••••"
+                className="w-full bg-slate-800/80 border border-slate-700 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-white placeholder-slate-400 rounded-xl px-4 py-3 text-sm outline-none transition-all"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+              />
+            </div>
           </div>
         </div>
-        <button disabled={loading} onClick={handleLogin} className="w-full py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors shadow-lg flex items-center justify-center">
-          {
-            loading ? "Loading..." : "Login"
-          }
-        </button>
-        <button
-          disabled={loading}
-          onClick={() => googleLogin()}
-          className="w-full py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg flex justify-center items-center gap-2 border border-white/20 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <BsGoogle />
-          <span>Sign In with Google</span>
-        </button>
 
-        <p className="text-white/80 text-center">
-          Don't have an account? <Link to="/register" className="text-white font-bold hover:underline">Register</Link>
+        {/* Action Buttons */}
+        <div className="space-y-3 pt-2">
+          <button
+            disabled={loading}
+            onClick={handleLogin}
+            className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 disabled:bg-amber-500/50 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 text-sm disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-4 w-4 text-slate-950" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                Authenticating...
+              </span>
+            ) : (
+              "Sign In"
+            )}
+          </button>
+
+          <div className="relative flex items-center justify-center my-2">
+            <div className="border-t border-slate-700/80 w-full" />
+            <span className="bg-slate-900 px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-widest absolute">Or</span>
+          </div>
+
+          <button
+            disabled={loading}
+            onClick={() => googleLogin()}
+            className="w-full py-3.5 bg-slate-800/90 hover:bg-slate-700 text-white font-semibold rounded-xl flex justify-center items-center gap-2.5 border border-slate-700 transition-all shadow-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <BsGoogle className="text-red-400" size={16} />
+            <span>Sign In with Google</span>
+          </button>
+        </div>
+
+        {/* Register Footer */}
+        <p className="text-xs text-slate-400 text-center pt-2">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-amber-400 hover:text-amber-300 font-bold hover:underline transition-colors">
+            Create an account
+          </Link>
         </p>
 
       </div>
