@@ -112,9 +112,8 @@ export default function AdminOrdersPage({ isDarkMode = false }) {
     return (
         <div className="w-full space-y-6">
             {/* Top Header Card */}
-            <div className={`flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl border transition-colors ${
-                isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-white border-gray-100 text-slate-800 shadow-sm'
-            }`}>
+            <div className={`flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl border transition-colors ${isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-white border-gray-100 text-slate-800 shadow-sm'
+                }`}>
                 <div>
                     <h1 className={`text-2xl font-bold tracking-tight flex items-center gap-2 ${isDarkMode ? 'text-slate-100' : 'text-gray-900'}`}>
                         <BiShoppingBag className="text-amber-500" /> Customer Orders Management
@@ -132,21 +131,18 @@ export default function AdminOrdersPage({ isDarkMode = false }) {
                             placeholder="Search Order ID, name, email..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className={`w-full pl-9 pr-4 py-2 border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all ${
-                                isDarkMode ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-400' : 'bg-gray-50 border-gray-200 text-gray-800 focus:bg-white'
-                            }`}
+                            className={`w-full pl-9 pr-4 py-2 border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all ${isDarkMode ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-400' : 'bg-gray-50 border-gray-200 text-gray-800 focus:bg-white'
+                                }`}
                         />
                     </div>
-                    <span className={`font-bold px-4 py-2 rounded-xl text-xs border whitespace-nowrap ${
-                        isDarkMode ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' : 'bg-amber-50 text-amber-700 border-amber-200'
-                    }`}>
+                    <span className={`font-bold px-4 py-2 rounded-xl text-xs border whitespace-nowrap ${isDarkMode ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' : 'bg-amber-50 text-amber-700 border-amber-200'
+                        }`}>
                         Total Orders: {totalOrders}
                     </span>
                     <button
                         onClick={triggerRefresh}
-                        className={`inline-flex items-center gap-1.5 px-3.5 py-2 font-semibold rounded-xl text-xs transition-colors ${
-                            isDarkMode ? 'bg-slate-800 hover:bg-slate-700 text-slate-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                        }`}
+                        className={`inline-flex items-center gap-1.5 px-3.5 py-2 font-semibold rounded-xl text-xs transition-colors ${isDarkMode ? 'bg-slate-800 hover:bg-slate-700 text-slate-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                            }`}
                     >
                         <BiRefresh size={18} /> Refresh
                     </button>
@@ -155,9 +151,8 @@ export default function AdminOrdersPage({ isDarkMode = false }) {
 
             {/* Filter Tabs & Stats Bar */}
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className={`flex flex-wrap items-center gap-2 p-1.5 rounded-2xl border transition-colors ${
-                    isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200 shadow-sm'
-                }`}>
+                <div className={`flex flex-wrap items-center gap-2 p-1.5 rounded-2xl border transition-colors ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200 shadow-sm'
+                    }`}>
                     {["all", "Pending", "Processing", "Shipped", "Delivered", "Cancelled"].map((tab) => (
                         <button
                             key={tab}
@@ -203,23 +198,20 @@ export default function AdminOrdersPage({ isDarkMode = false }) {
             )}
 
             {!loading && filteredOrders.length === 0 ? (
-                <div className={`w-full rounded-2xl p-12 text-center border transition-colors space-y-2 ${
-                    isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-white border-gray-100 text-slate-800 shadow-sm'
-                }`}>
+                <div className={`w-full rounded-2xl p-12 text-center border transition-colors space-y-2 ${isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-white border-gray-100 text-slate-800 shadow-sm'
+                    }`}>
                     <BiShoppingBag size={48} className={`mx-auto ${isDarkMode ? 'text-slate-600' : 'text-gray-300'}`} />
                     <h3 className={`text-base font-bold ${isDarkMode ? 'text-slate-200' : 'text-gray-700'}`}>No orders found</h3>
                     <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-gray-400'}`}>There are no orders matching the selected filter ({activeFilter}).</p>
                 </div>
             ) : (
-                <div className={`w-full rounded-2xl border transition-colors overflow-hidden ${
-                    isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-white border-gray-100 text-slate-800 shadow-sm'
-                }`}>
+                <div className={`w-full rounded-2xl border transition-colors overflow-hidden ${isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-white border-gray-100 text-slate-800 shadow-sm'
+                    }`}>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className={`border-b text-xs font-semibold uppercase tracking-wider ${
-                                    isDarkMode ? 'bg-slate-800/60 border-slate-800 text-slate-400' : 'bg-gray-50 border-gray-100 text-gray-500'
-                                }`}>
+                                <tr className={`border-b text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'bg-slate-800/60 border-slate-800 text-slate-400' : 'bg-gray-50 border-gray-100 text-gray-500'
+                                    }`}>
                                     <th className="p-4">Order ID</th>
                                     <th className="p-4">Customer</th>
                                     <th className="p-4">City / Phone</th>
@@ -229,14 +221,12 @@ export default function AdminOrdersPage({ isDarkMode = false }) {
                                     <th className="p-4 text-center">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className={`divide-y text-sm ${
-                                isDarkMode ? 'divide-slate-800 text-slate-200' : 'divide-gray-100 text-gray-700'
-                            }`}>
+                            <tbody className={`divide-y text-sm ${isDarkMode ? 'divide-slate-800 text-slate-200' : 'divide-gray-100 text-gray-700'
+                                }`}>
                                 {filteredOrders.map((order) => {
                                     return (
-                                        <tr className={`transition-colors ${
-                                            isDarkMode ? 'hover:bg-slate-800/40' : 'hover:bg-gray-50/50'
-                                        }`} key={order.orderId}>
+                                        <tr className={`transition-colors ${isDarkMode ? 'hover:bg-slate-800/40' : 'hover:bg-gray-50/50'
+                                            }`} key={order.orderId}>
                                             {/* Order ID */}
                                             <td className="p-4 font-mono font-bold text-amber-500 text-xs">
                                                 #{order.orderId}
@@ -260,8 +250,7 @@ export default function AdminOrdersPage({ isDarkMode = false }) {
                                                     disabled={order.status === "Cancelled"}
                                                     value={order.status}
                                                     onChange={(e) => handleUpdateStatusRow(order.orderId, e.target.value)}
-                                                    className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border outline-none transition-all ${
-                                                        order.status === "Cancelled"
+                                                    className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border outline-none transition-all ${order.status === "Cancelled"
                                                             ? isDarkMode ? "bg-red-500/10 text-red-400 border-red-500/30 cursor-not-allowed opacity-80" : "bg-red-50 text-red-700 border-red-200 cursor-not-allowed opacity-80"
                                                             : order.status === "Delivered"
                                                                 ? isDarkMode ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20 cursor-pointer" : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 cursor-pointer"
@@ -270,7 +259,7 @@ export default function AdminOrdersPage({ isDarkMode = false }) {
                                                                     : order.status === "Processing"
                                                                         ? isDarkMode ? "bg-blue-500/10 text-blue-400 border-blue-500/30 hover:bg-blue-500/20 cursor-pointer" : "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 cursor-pointer"
                                                                         : isDarkMode ? "bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-500/20 cursor-pointer" : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 cursor-pointer"
-                                                    }`}
+                                                        }`}
                                                 >
                                                     <option value="Pending" className={isDarkMode ? "bg-slate-900 text-white" : "bg-white text-gray-800"}>Pending</option>
                                                     <option value="Processing" className={isDarkMode ? "bg-slate-900 text-white" : "bg-white text-gray-800"}>Processing</option>
@@ -312,15 +301,13 @@ export default function AdminOrdersPage({ isDarkMode = false }) {
             )}
 
             {/* Pagination Controls */}
-            <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 border rounded-2xl p-4 transition-colors ${
-                isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-white border-gray-100 text-gray-800 shadow-sm'
-            }`}>
+            <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 border rounded-2xl p-4 transition-colors ${isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-white border-gray-100 text-gray-800 shadow-sm'
+                }`}>
                 <select
                     value={pageSize}
                     onChange={(e) => { setPageSize(Number(e.target.value)); setLoading(true); }}
-                    className={`px-3 py-1.5 border rounded-xl text-xs font-semibold focus:outline-none cursor-pointer ${
-                        isDarkMode ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-gray-50 border-gray-200 text-gray-700'
-                    }`}
+                    className={`px-3 py-1.5 border rounded-xl text-xs font-semibold focus:outline-none cursor-pointer ${isDarkMode ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-gray-50 border-gray-200 text-gray-700'
+                        }`}
                 >
                     <option value={5}>5 per page</option>
                     <option value={10}>10 per page</option>
@@ -331,9 +318,8 @@ export default function AdminOrdersPage({ isDarkMode = false }) {
                     <button
                         disabled={pageNumber === 1}
                         onClick={() => { setPageNumber(pageNumber - 1); setLoading(true); }}
-                        className={`px-4 py-2 text-xs font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors ${
-                            isDarkMode ? 'bg-slate-800 text-slate-200 hover:bg-slate-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
+                        className={`px-4 py-2 text-xs font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors ${isDarkMode ? 'bg-slate-800 text-slate-200 hover:bg-slate-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
                     >
                         Previous
                     </button>
@@ -343,9 +329,8 @@ export default function AdminOrdersPage({ isDarkMode = false }) {
                     <button
                         disabled={pageNumber === totalPages}
                         onClick={() => { setPageNumber(pageNumber + 1); setLoading(true); }}
-                        className={`px-4 py-2 text-xs font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors ${
-                            isDarkMode ? 'bg-slate-800 text-slate-200 hover:bg-slate-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
+                        className={`px-4 py-2 text-xs font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors ${isDarkMode ? 'bg-slate-800 text-slate-200 hover:bg-slate-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
                     >
                         Next
                     </button>
