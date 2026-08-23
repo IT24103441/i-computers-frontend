@@ -241,8 +241,8 @@ export default function AdminPage() {
                                     element={item.element}
                                 />
                             ))}
-                            <Route path="/products/add" element={<AdminAddProductForm />} />
-                            <Route path="/products/edit/:productId" element={<AdminEditProductForm />} />
+                            <Route path="/products/add" element={<AdminAddProductForm isDarkMode={isDarkMode} />} />
+                            <Route path="/products/edit/:productId" element={<AdminEditProductForm isDarkMode={isDarkMode} />} />
                         </Routes>
                     </div>
                 </main>
