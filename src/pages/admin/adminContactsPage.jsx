@@ -115,19 +115,23 @@ export default function AdminContactsPage({ isDarkMode = false }) {
   return (
     <div className="w-full space-y-6">
       {/* Header Card */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+      <div className={`flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl border transition-colors ${
+        isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-white border-gray-100 text-slate-800 shadow-sm'
+      }`}>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+          <h1 className={`text-2xl font-bold tracking-tight flex items-center gap-2 ${isDarkMode ? 'text-slate-100' : 'text-gray-900'}`}>
             <BiEnvelope className="text-amber-500" /> Customer Contact Messages
           </h1>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className={`text-xs mt-1 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
             View customer inquiries submitted from the Contact Us page and send email replies.
           </p>
         </div>
 
         <button
           onClick={() => fetchMessages(activeFilter)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-xs transition-colors w-fit"
+          className={`inline-flex items-center gap-2 px-4 py-2 font-semibold rounded-xl text-xs transition-colors w-fit ${
+            isDarkMode ? 'bg-slate-800 hover:bg-slate-700 text-slate-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+          }`}
         >
           <BiRefresh size={18} /> Refresh List
         </button>
@@ -135,14 +139,18 @@ export default function AdminContactsPage({ isDarkMode = false }) {
 
       {/* Filter Tabs & Stats */}
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-gray-200 shadow-sm">
+        <div className={`flex items-center gap-2 p-1.5 rounded-2xl border transition-colors ${
+          isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200 shadow-sm'
+        }`}>
           {["all", "pending", "replied"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveFilter(tab)}
               className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${activeFilter === tab
-                ? "bg-amber-600 text-white shadow-md"
-                : "text-gray-600 hover:bg-gray-100"
+                ? "bg-amber-600 text-white shadow-md font-bold"
+                : isDarkMode
+                  ? "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  : "text-gray-600 hover:bg-gray-100"
                 }`}
             >
               {tab}
@@ -150,14 +158,14 @@ export default function AdminContactsPage({ isDarkMode = false }) {
           ))}
         </div>
 
-        <div className="flex items-center gap-4 text-xs font-medium">
-          <span className="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
+          <span className={`px-3 py-1.5 rounded-xl border ${isDarkMode ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
             Total: <strong>{totalCount}</strong>
           </span>
-          <span className="px-3 py-1.5 rounded-xl bg-yellow-50 text-yellow-700 border border-yellow-200">
+          <span className={`px-3 py-1.5 rounded-xl border ${isDarkMode ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' : 'bg-yellow-50 text-yellow-700 border-yellow-200'}`}>
             Pending: <strong>{pendingCount}</strong>
           </span>
-          <span className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span className={`px-3 py-1.5 rounded-xl border ${isDarkMode ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-emerald-50 text-emerald-700 border-emerald-200'}`}>
             Replied: <strong>{repliedCount}</strong>
           </span>
         </div>
@@ -169,10 +177,12 @@ export default function AdminContactsPage({ isDarkMode = false }) {
           <LoadingScreen />
         </div>
       ) : messages.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-gray-100 shadow-sm space-y-2">
-          <BiEnvelope size={48} className="mx-auto text-gray-300" />
-          <h3 className="text-base font-bold text-gray-700">No contact messages</h3>
-          <p className="text-xs text-gray-400">There are no messages under this filter.</p>
+        <div className={`rounded-2xl p-12 text-center border transition-colors space-y-2 ${
+          isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-100' : 'bg-white border-gray-100 shadow-sm'
+        }`}>
+          <BiEnvelope size={48} className={`mx-auto ${isDarkMode ? 'text-slate-600' : 'text-gray-300'}`} />
+          <h3 className={`text-base font-bold ${isDarkMode ? 'text-slate-200' : 'text-gray-700'}`}>No contact messages</h3>
+          <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-gray-400'}`}>There are no messages under this filter.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
@@ -181,30 +191,37 @@ export default function AdminContactsPage({ isDarkMode = false }) {
             return (
               <div
                 key={msgId}
-                className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4 transition-all hover:border-amber-200"
+                className={`p-6 rounded-2xl border transition-all space-y-4 ${
+                  isDarkMode
+                    ? 'bg-slate-900 border-slate-800 text-slate-100 hover:border-amber-500/40'
+                    : 'bg-white border-gray-100 text-slate-800 shadow-sm hover:border-amber-200'
+                }`}
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-3">
+                <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-3 ${
+                  isDarkMode ? 'border-slate-800' : 'border-gray-100'
+                }`}>
                   <div>
-                    <h3 className="font-bold text-gray-900 text-sm flex items-center gap-2">
+                    <h3 className={`font-bold text-sm flex items-center gap-2 ${isDarkMode ? 'text-slate-100' : 'text-gray-900'}`}>
                       {msg.name}
-                      <span className="text-xs font-normal text-gray-400">({msg.email})</span>
+                      <span className={`text-xs font-normal ${isDarkMode ? 'text-slate-400' : 'text-gray-400'}`}>({msg.email})</span>
                     </h3>
-                    <p className="text-xs font-semibold text-amber-600 mt-0.5">
+                    <p className={`text-xs font-semibold mt-0.5 ${isDarkMode ? 'text-amber-400' : 'text-amber-600'}`}>
                       Subject: {msg.subject || "General Inquiry"}
                     </p>
                   </div>
 
                   <div className="flex items-center gap-3">
                     <span
-                      className={`px-3 py-1 rounded-full text-[11px] font-bold capitalize ${msg.status === "replied"
-                        ? "bg-emerald-100 text-emerald-700"
-                        : "bg-yellow-100 text-yellow-700"
-                        }`}
+                      className={`px-3 py-1 rounded-full text-[11px] font-bold capitalize ${
+                        msg.status === "replied"
+                          ? isDarkMode ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-emerald-100 text-emerald-700"
+                          : isDarkMode ? "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30" : "bg-yellow-100 text-yellow-700"
+                      }`}
                     >
                       {msg.status}
                     </span>
 
-                    <span className="text-[11px] text-gray-400">
+                    <span className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-gray-400'}`}>
                       {(() => {
                         try {
                           return formatTimestamp(msg.createdAt);
@@ -217,15 +234,19 @@ export default function AdminContactsPage({ isDarkMode = false }) {
                 </div>
 
                 {/* Message Body */}
-                <div className="bg-gray-50/70 p-4 rounded-xl border border-gray-100 text-xs text-gray-700 leading-relaxed">
-                  <p className="font-semibold text-gray-500 mb-1 text-[11px]">CUSTOMER MESSAGE:</p>
+                <div className={`p-4 rounded-xl border text-xs leading-relaxed ${
+                  isDarkMode ? 'bg-slate-800/60 border-slate-700/60 text-slate-200' : 'bg-gray-50/70 border-gray-100 text-gray-700'
+                }`}>
+                  <p className={`font-semibold mb-1 text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>CUSTOMER MESSAGE:</p>
                   <p>{msg.message}</p>
                 </div>
 
                 {/* Existing Reply if available */}
                 {msg.replyMessage && (
-                  <div className="bg-emerald-50/60 p-4 rounded-xl border border-emerald-100 text-xs text-emerald-950 space-y-1">
-                    <p className="font-bold text-emerald-800 text-[11px] flex items-center gap-1">
+                  <div className={`p-4 rounded-xl border text-xs space-y-1 ${
+                    isDarkMode ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200' : 'bg-emerald-50/60 border-emerald-100 text-emerald-950'
+                  }`}>
+                    <p className={`font-bold text-[11px] flex items-center gap-1 ${isDarkMode ? 'text-emerald-400' : 'text-emerald-800'}`}>
                       <BiCheckCircle /> ADMIN REPLY SENT ({msg.repliedAt ? new Date(msg.repliedAt).toLocaleDateString() : 'Replied'}):
                     </p>
                     <p className="leading-relaxed">{msg.replyMessage}</p>
@@ -243,7 +264,9 @@ export default function AdminContactsPage({ isDarkMode = false }) {
 
                   <button
                     onClick={() => handleDeleteMessage(msgId)}
-                    className="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition-colors"
+                    className={`p-2 rounded-xl transition-colors ${
+                      isDarkMode ? 'bg-red-500/10 hover:bg-red-500/20 text-red-400' : 'bg-red-50 hover:bg-red-100 text-red-600'
+                    }`}
                     title="Delete Message"
                   >
                     <BiTrash size={18} />
@@ -258,15 +281,19 @@ export default function AdminContactsPage({ isDarkMode = false }) {
       {/* REPLY MODAL */}
       {selectedMessage && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center p-4">
-          <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 animate-in fade-in zoom-in duration-200">
-            <div className="flex justify-between items-center border-b border-gray-100 pb-4">
+          <div className={`w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 animate-in fade-in zoom-in duration-200 border ${
+            isDarkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-gray-100 text-gray-900'
+          }`}>
+            <div className={`flex justify-between items-center border-b pb-4 ${isDarkMode ? 'border-slate-800' : 'border-gray-100'}`}>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">Reply to {selectedMessage.name}</h3>
-                <p className="text-xs text-gray-400">To: {selectedMessage.email}</p>
+                <h3 className={`text-xl font-bold ${isDarkMode ? 'text-slate-100' : 'text-gray-900'}`}>Reply to {selectedMessage.name}</h3>
+                <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-gray-400'}`}>To: {selectedMessage.email}</p>
               </div>
               <button
                 onClick={() => setSelectedMessage(null)}
-                className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+                className={`p-1 rounded-lg transition-colors ${
+                  isDarkMode ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                }`}
               >
                 <BiX size={24} />
               </button>
@@ -274,13 +301,15 @@ export default function AdminContactsPage({ isDarkMode = false }) {
 
             <form onSubmit={handleSendReply} className="space-y-4">
               {/* Customer original message box preview */}
-              <div className="p-3 bg-gray-50 rounded-xl text-xs text-gray-600 border border-gray-100 space-y-1">
-                <p className="font-semibold text-gray-500 text-[10px]">ORIGINAL INQUIRY:</p>
+              <div className={`p-3 rounded-xl text-xs border space-y-1 ${
+                isDarkMode ? 'bg-slate-800/80 border-slate-700 text-slate-300' : 'bg-gray-50 border-gray-100 text-gray-600'
+              }`}>
+                <p className={`font-semibold text-[10px] ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>ORIGINAL INQUIRY:</p>
                 <p className="line-clamp-3 italic">"{selectedMessage.message}"</p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className={`block text-xs font-semibold mb-1 ${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>
                   Your Response / Email Reply *
                 </label>
                 <textarea
@@ -289,7 +318,9 @@ export default function AdminContactsPage({ isDarkMode = false }) {
                   placeholder="Type your response to the user here..."
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  className={`w-full px-4 py-3 rounded-xl border text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all ${
+                    isDarkMode ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-400' : 'bg-white border-gray-200 text-gray-800'
+                  }`}
                 />
               </div>
 
@@ -297,7 +328,9 @@ export default function AdminContactsPage({ isDarkMode = false }) {
                 <button
                   type="button"
                   onClick={() => setSelectedMessage(null)}
-                  className="px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-xl text-xs hover:bg-gray-200 transition-colors"
+                  className={`px-4 py-2.5 font-semibold rounded-xl text-xs transition-colors ${
+                    isDarkMode ? 'bg-slate-800 hover:bg-slate-700 text-slate-200' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                  }`}
                 >
                   Cancel
                 </button>
