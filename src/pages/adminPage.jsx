@@ -70,25 +70,25 @@ export default function AdminPage() {
             path: '/admin/products',
             name: 'Products',
             icon: <MdInventory size={22} />,
-            element: <AdminProductsPage />
+            element: <AdminProductsPage isDarkMode={isDarkMode} />
         },
         {
             path: '/admin/users',
             name: 'Users',
             icon: <MdPeople size={22} />,
-            element: <AdminUsersPage />
+            element: <AdminUsersPage isDarkMode={isDarkMode} />
         },
         {
             path: '/admin/reviews',
             name: 'Reviews',
             icon: <MdRateReview size={22} />,
-            element: <AdminReviewsPage />
+            element: <AdminReviewsPage isDarkMode={isDarkMode} />
         },
         {
             path: '/admin/messages',
             name: 'Messages',
             icon: <MdEmail size={22} />,
-            element: <AdminContactsPage />
+            element: <AdminContactsPage isDarkMode={isDarkMode} />
         },
     ];
 

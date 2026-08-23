@@ -4,7 +4,7 @@ import LoadingScreen from "../../components/loadingScreen";
 import { BiRefresh, BiSearch } from "react-icons/bi";
 import toast from "react-hot-toast";
 
-export default function AdminUsersPage() {
+export default function AdminUsersPage({ isDarkMode = false }) {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);

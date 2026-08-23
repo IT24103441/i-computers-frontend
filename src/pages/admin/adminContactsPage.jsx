@@ -14,7 +14,7 @@ import {
 } from "react-icons/bi";
 import formatTimestamp from "../../utils/date-formatter";
 
-export default function AdminContactsPage() {
+export default function AdminContactsPage({ isDarkMode = false }) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
