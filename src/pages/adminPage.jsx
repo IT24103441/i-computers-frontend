@@ -64,7 +64,7 @@ export default function AdminPage() {
             path: '/admin',
             name: 'Orders',
             icon: <MdShoppingBasket size={22} />,
-            element: <AdminOrdersPage />
+            element: <AdminOrdersPage isDarkMode={isDarkMode} />
         },
         {
             path: '/admin/products',
