@@ -224,6 +224,11 @@ export default function ProductsPage() {
                                                             {product.category}
                                                         </span>
                                                     )}
+                                                    {(Number(product.labelledPrice ?? product.labeledPrice) > Number(product.price)) && (
+                                                        <span className="text-[11px] text-gray-400 line-through">
+                                                            {getFormattedPrice(product.labelledPrice ?? product.labeledPrice)}
+                                                        </span>
+                                                    )}
                                                     <span className="text-xs font-bold text-amber-600">
                                                         {getFormattedPrice(product.price)}
                                                     </span>

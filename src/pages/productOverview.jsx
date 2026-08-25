@@ -172,15 +172,13 @@ export default function ProductOverview() {
                     </div>
 
                     <div className="flex items-baseline gap-3 mb-4">
-                        <p className="text-2xl sm:text-3xl text-amber-600 font-bold">
+                        <span className="text-2xl sm:text-3xl text-amber-600 font-bold">
                             {getFormattedPrice(product.price)}
-                        </p>
-                        {Number(product.labelledPrice ?? product.labeledPrice) > Number(product.price) && (
-                            <p className="text-gray-400 text-base line-through">
-                                {getFormattedPrice(
-                                    product.labelledPrice ?? product.labeledPrice
-                                )}
-                            </p>
+                        </span>
+                        {(Number(product.labelledPrice ?? product.labeledPrice) > Number(product.price)) && (
+                            <span className="text-base sm:text-lg text-gray-400 line-through font-normal">
+                                {getFormattedPrice(product.labelledPrice ?? product.labeledPrice)}
+                            </span>
                         )}
                     </div>
 
